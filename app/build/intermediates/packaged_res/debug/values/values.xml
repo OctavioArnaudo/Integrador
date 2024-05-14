@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="errorColor">#F6A7A1</color>
+    <color name="green_accessibility">#578200</color>
+    <color name="grey">#515050</color>
+    <color name="greyLigth">#8C8787</color>
+    <color name="ic_myapplication_launcher_background">#FFFFFF</color>
+    <color name="my_accent_color">#FF5722</color>
+    <color name="my_dark_primary">#096CB5</color>
+    <color name="my_dark_primary_dark">#096CB5</color>
+    <color name="my_dark_secondary">#FF6F6F</color>
+    <color name="red">#FF0000</color>
+    <color name="redLigth">#FF6F6F</color>
+    <color name="sign_accessibility">#B74D4D</color>
+    <color name="text_accesibility">#272626</color>
+    <color name="transparentColor">#00FFFFFF</color>
+    <color name="white">#FFFFFFFF</color>
+    <item name="cardViewReg" type="id"/>
+    <string name="agregar">+ Agregar</string>
+    <string name="app_name">MyApplication</string>
+    <string name="atras">Volver</string>
+    <string name="autenticacion">Autenticación</string>
+    <string name="boton_guardar">Guardar</string>
+    <string name="btn_agregar">+</string>
+    <string name="btn_register">Registrarse</string>
+    <string name="buscar">Buscar</string>
+    <string name="button">Iniciar Sesión</string>
+    <string name="correo">Correo</string>
+    <string name="descripcion">Descripción</string>
+    <string name="descripcion_pass">Descripción</string>
+    <string name="description_e">Descripción</string>
+    <string name="edit_password">Editar Contraseña </string>
+    <string name="fingerprint">Usa tu Huella</string>
+    <string name="guardar_password">Nueva Contraseña</string>
+    <string name="link_login">Toque aquí para registrarse si ya tiene una cuenta</string>
+    <string name="log_in">Iniciar Sesión</string>
+    <string name="login">¿Ya tiene una cuenta?</string>
+    <string name="nombre">Nombre</string>
+    <string name="nombre_sitio">Sitio Web</string>
+    <string name="off">OFF</string>
+    <string name="on">ON</string>
+    <string name="op1">About</string>
+    <string name="op2">Cerrar Sesión</string>
+    <string name="password">Contraseña</string>
+    <string name="password2">Repetir Contraseña</string>
+    <string name="password_e">Contraseña</string>
+    <string name="password_sitio">Contraseña</string>
+    <string name="passwords">Tus Contraseñas</string>
+    <string name="register">Registrarse</string>
+    <string name="todo">Scroll</string>
+    <string name="txtPasswords">No hay contraseñas  que mostrar, ¡por favor añada una!</string>
+    <string name="url">URL</string>
+    <string name="url_e">URL</string>
+    <string name="url_sitio">URL</string>
+    <string name="usuario">Usuario</string>
+    <string name="usuario_nombre">Usuario</string>
+    <string name="ver_password">Ver Contraseña</string>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+</style>
+    <style name="Base.Theme.myapplication" parent="Theme.Material3.DayNight.NoActionBar">
+        
+        
+
+        <item name="cardViewStyle">@style/CardViewNoBorder</item>
+        <item name="android:itemTextAppearance">@style/MyMenuItemTextAppearance</item>
+           <item name="actionOverflowMenuStyle">@style/MyOverflowMenuStyle</item>
+
+    </style>
+    <style name="CardViewNoBorder" parent="CardView">
+       <item name="cardCornerRadius">0dp</item>
+    </style>
+    <style name="MyMenuItemTextAppearance">
+    <item name="android:textColor">@color/greyLigth</item>
+
+</style>
+    <style name="MyOverflowMenuStyle">
+    <item name="android:popupBackground">@color/white</item>
+</style>
+    <style name="Theme.myapplication" parent="Base.Theme.myapplication"/>
+</resources>

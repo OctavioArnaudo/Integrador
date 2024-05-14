@@ -80,7 +80,6 @@ public class ViewPassActivity extends AppCompatActivity {
         @SuppressLint("CutPasteId") TextInputEditText editTextPassword = findViewById(R.id.editTextPassword);
         TextInputLayout textInputLayout3 = findViewById(R.id.textInputLayout3);
 
-
         //copiar la contraseña al portapapeles
         imageViewCopy.setOnClickListener(v -> {
             String password = Objects.requireNonNull(textInputLayout3.getEditText()).getText().toString();

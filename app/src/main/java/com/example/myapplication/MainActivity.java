@@ -35,10 +35,10 @@ public class MainActivity extends AppCompatActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.i("TAG", "PasKeeper Iniciado");
+		Log.i("TAG", "MyApplication Iniciado");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		//abro el storage
+		// abro el storage
 		SharedPreferences sharedPreferences = getSharedPreferences("Storage", Context.MODE_PRIVATE);
 
 		dbManager = new DbManager(getApplicationContext());
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 		textInputLayoutEmail = findViewById(R.id.textInputLayout);
 		textInputLayoutPwd = findViewById(R.id.textInputLayout2);
 
-		//asigno el boton de la huella
+		// asigno el boton de la huella
 		Button btnBiometric = findViewById(R.id.fingerprint);
 		
 		// Agregamos TextWatcher a los EditText
@@ -57,11 +57,10 @@ public class MainActivity extends AppCompatActivity {
 		int bio = sharedPreferences.getInt("biometric",-1);
 		Log.i("TAG", "Login Biometric: "+bio);
 
-
 		if(bio == 1) {
 			boolean biometricFinger = BiometricUtils.isBiometricPromptEnabled(MainActivity.this);
 			boolean userWhitBiometric = dbManager.userWhitBiometrics();
-			Log.i("TAG", "existe usuario con biometria: "+userWhitBiometric);
+			Log.i("TAG", "existe usuario con biometria: " + userWhitBiometric);
 			// Si el usuario ha configurado la preferencia para usar la autenticación biométrica
 			if (biometricFinger) {
 			// Mostrar el cuadro de diálogo de autenticación biométrica
@@ -148,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 			// Si las credenciales son inválidas, muestra un mensaje de error.
 			String TITLE = "Credenciales inválidas";
 			String MSG = "Usuario o contraseña incorrectos";
-			mostrarSweetAlert(this,3, TITLE, MSG,null);
+			mostrarSweetAlert(this, 3, TITLE, MSG, null);
 			// También podría usar Toast para mostrar un mensaje de error alternativo.
 			//Toast.makeText(this, "Credenciales inválidas, por favor intenta nuevamente", Toast.LENGTH_SHORT).show();
 			// Cierra la conexión con la base de datos.
