@@ -29,7 +29,7 @@ Crea un archivo .env en el directorio del proyecto y establece las variables de 
 
 ```sh
 SECRET_KEY='tu_clave_secreta'
-DB_HOST='host de concecion a la base de datos'
+DB_HOST='host_de_concesion_a_la_base_de_datos'
 DB_PORT=5432
 DB_USER='usuario_de_la_base_de_datos'
 DB_PASSWORD='password_de_la_base_de_datos'

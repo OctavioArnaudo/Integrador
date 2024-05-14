@@ -156,7 +156,7 @@
                 android:drawableTop="@drawable/fingerprint_solid"
                 android:drawableTint="@android:color/white"
                 android:textAllCaps="false"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <!-- Segundo campo de entrada -->
 
@@ -165,19 +165,19 @@
         <TextView
             android:id="@+id/linkRegister"
             android:layout_width="174dp"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:layout_marginStart="110dp"
             android:layout_marginTop="380dp"
+            android:contentDescription="Toque aquí para crear una cuenta  si no tiene una"
             android:text="No estas registrado?"
             android:textColor="@color/red"
             android:textSize="16sp"
-            android:contentDescription="Toque aquí para crear una cuenta  si no tiene una"
             app:layout_constraintBottom_toTopOf="@+id/materialButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.72"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/cardView"
-            tools:ignore="HardcodedText"/>
+            tools:ignore="HardcodedText" />
 
     </com.google.android.material.card.MaterialCardView>
 
