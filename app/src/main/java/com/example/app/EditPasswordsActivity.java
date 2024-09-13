@@ -18,153 +18,158 @@ import com.example.app.data.model.response.PasswordResponse;
 
 import java.util.Objects;
 
-public class EditPasswordActivity extends AppCompatActivity {
+public class EditPasswordsActivity extends AppCompatActivity {
 
-    Button btnPrev;
-    Button btnGuardar;
+    private Button btnBack;
+    private Button btnSave;
 
     private DbManager dbManager;
     private TextInputEditText editTextName;
-    private TextInputEditText editTextUsuario;
+    private TextInputEditText editTextUsername;
     private TextInputEditText editTextPassword;
     private TextInputEditText editTextUrl;
-    private TextInputEditText editTextDescripcion;
+    private TextInputEditText editTextDescription;
     private SharedPreferences sharedPreferences;
     private TextInputLayout textInputLayoutName;
     private TextInputLayout textInputLayoutUrl;
-    private TextInputLayout textInputLayoutPass;
-    private int columnIndexId; // Almacena el ID de la contraseña que se está editando
+    private TextInputLayout textInputLayoutPassword;
+    private int passwordId; // Stores the ID of the password being edited
 
     /**
-     * Método llamado cuando se crea la actividad. Realiza la inicialización y configuración de la interfaz de usuario.
+     * Called when the activity is first created. Initializes and configures the user interface.
      *
-     * @param savedInstanceState Instancia anterior del estado de la actividad (puede ser nula).
+     * @param savedInstanceState The previously saved state of the activity, or null if none.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_editar_password);
+        setContentView(R.layout.activity_edit_password);
 
         sharedPreferences = getSharedPreferences("Storage", MODE_PRIVATE);
-        // Obtiene el Intent que inició esta actividad
-        Intent intent = getIntent();
+        dbManager = new DbManager(this);
 
-        // Utiliza 0 como valor predeterminado en el caso que no venga ningun valor
-        columnIndexId = intent.getIntExtra("idColumna", 0);
+        initializeUI();
+        retrievePasswordIdFromIntent();
+        loadPasswordDetails();
+        setupButtonListeners();
+    }
 
-        // Proporciona una etiqueta ("TAG") donde le paso la activity y el mensaje
-        Log.i("TAG", "Valor de columnIndexId: " + columnIndexId);
-
-        //Se instancia dbmanager para acceder a su lógica
-        dbManager = new DbManager(EditPasswordActivity.this);
-
-        //inicializo las variables
+    private void initializeUI() {
         editTextName = findViewById(R.id.editTextName);
-        editTextUsuario = findViewById(R.id.editTextUsuario);
+        editTextUsername = findViewById(R.id.editTextUsername);
         editTextPassword = findViewById(R.id.editTextPassword);
         editTextUrl = findViewById(R.id.editTextUrl);
-        editTextDescripcion = findViewById(R.id.editTextDescripcion);
+        editTextDescription = findViewById(R.id.editTextDescription);
         textInputLayoutName = findViewById(R.id.textInputLayoutName);
-        textInputLayoutUrl = findViewById(R.id.textInputLayout4);
-        textInputLayoutPass = findViewById(R.id.textInputLayout3);
+        textInputLayoutUrl = findViewById(R.id.textInputLayoutUrl);
+        textInputLayoutPassword = findViewById(R.id.textInputLayoutPassword);
+        btnSave = findViewById(R.id.btnSave);
+        btnBack = findViewById(R.id.btnBack);
+    }
 
+    private void retrievePasswordIdFromIntent() {
+        passwordId = getIntent().getIntExtra("idColumn", 0);
+        Log.i("TAG", "Password ID: " + passwordId);
+    }
+
+    private void loadPasswordDetails() {
         int userId = sharedPreferences.getInt("userId", -1);
-        // Obtiene los detalles de la contraseña que se va a editar
         try {
-            PasswordResponse updatedPasswordDetails = dbManager.getPasswordDetails(columnIndexId, userId);
-            if (updatedPasswordDetails != null) {
-                // Rellena los campos de texto con los detalles de la contraseña a editar
-                editTextName.setText(updatedPasswordDetails.getName());
-                editTextUsuario.setText(updatedPasswordDetails.getUsername());
-                editTextPassword.setText(updatedPasswordDetails.getKeyword());
-                editTextUrl.setText(updatedPasswordDetails.getUrl());
-                editTextDescripcion.setText(updatedPasswordDetails.getDescription());
+            PasswordResponse passwordDetails = dbManager.getPasswordDetails(passwordId, userId);
+            if (passwordDetails != null) {
+                populateFields(passwordDetails);
             } else {
-                // Muestra un mensaje de error si la actualización falla
-                Toast.makeText(EditPasswordActivity.this, "Error al actualizar la contraseña", Toast.LENGTH_SHORT).show();
+                showToast("Failed to load password details.");
             }
-        }catch (Exception e){
-            Log.e("TAG", "ERROR: "+e.getMessage());
+        } catch (Exception e) {
+            Log.e("TAG", "Error: " + e.getMessage());
         }
+    }
 
-        // Configuración del botón para guardar la contraseña editada
-        btnGuardar = findViewById(R.id.btnGuardar);
-        btnGuardar.setOnClickListener(new View.OnClickListener() {
-            PasswordCredentials pwd = null;
+    private void populateFields(PasswordResponse passwordDetails) {
+        editTextName.setText(passwordDetails.getName());
+        editTextUsername.setText(passwordDetails.getUsername());
+        editTextPassword.setText(passwordDetails.getKeyword());
+        editTextUrl.setText(passwordDetails.getUrl());
+        editTextDescription.setText(passwordDetails.getDescription());
+    }
 
-            @Override
-            public void onClick(View view) {
-                // Obtiene los nuevos valores de los campos
-                String newName = Objects.requireNonNull(editTextName.getText()).toString();
-                String newUser = Objects.requireNonNull(editTextUsuario.getText()).toString();
-                String newPassword = Objects.requireNonNull(editTextPassword.getText()).toString();
-                String newUrl = Objects.requireNonNull(editTextUrl.getText()).toString();
-                String newDescription = Objects.requireNonNull(editTextDescripcion.getText()).toString();
-
-               if(validateInputNewPass()){
-                   try {
-                       int userId = sharedPreferences.getInt("userId", -1);
-                       Log.i("TAG", "El usuario en EditPasswordActivity es: "+userId);
-
-                       // Obtiene los detalles de la contraseña actual
-                       pwd = new PasswordCredentials(newUser,newUrl,newPassword,newDescription,newName, userId);
-
-                       if (dbManager.updatePassword(columnIndexId,pwd, userId)) {
-                           // Añade un mensaje de confirmación
-                           startActivity(new Intent(EditPasswordActivity.this, ShowPasswordsActivity.class));
-                           Toast.makeText(EditPasswordActivity.this, "Modificado con éxito", Toast.LENGTH_SHORT).show();
-                           finish();
-                       } else {
-                           // Mensaje de error si no se encuentra la contraseña
-                           Toast.makeText(EditPasswordActivity.this, "Error al actualizar la contraseña", Toast.LENGTH_SHORT).show();
-                       }
-                   }catch (Exception e){
-                       Log.e("TAG", "ERROR: "+ e.getMessage());
-                   }
-               }
+    private void setupButtonListeners() {
+        btnSave.setOnClickListener(view -> {
+            if (validateInput()) {
+                updatePassword();
             }
         });
 
-        //-------------------------------- Regresa a la activity PasswordActivity--------------------------------------
-        btnPrev = findViewById(R.id.boton_atras);
-        btnPrev.setOnClickListener(view -> {
-            // Cierra la base de datos y vuelve a la actividad ShowPasswordsActivity
-            Intent intent1 = new Intent(EditPasswordActivity.this, ShowPasswordsActivity.class);
-            startActivity(intent1);
+        btnBack.setOnClickListener(view -> {
+            Intent intent = new Intent(EditPasswordsActivity.this, ShowPasswordsActivity.class);
+            startActivity(intent);
         });
     }
 
-    /**
-     * Método para validar las entradas del usuario al registrar una nueva contraseña.
-     *
-     * @return true si las entradas son válidas, false si hay errores de validación.
-     */
-    private boolean validateInputNewPass() {
+    private void updatePassword() {
+        String name = Objects.requireNonNull(editTextName.getText()).toString();
+        String username = Objects.requireNonNull(editTextUsername.getText()).toString();
+        String password = Objects.requireNonNull(editTextPassword.getText()).toString();
         String url = Objects.requireNonNull(editTextUrl.getText()).toString();
-        String pass = Objects.requireNonNull(editTextPassword.getText()).toString();
+        String description = Objects.requireNonNull(editTextDescription.getText()).toString();
+
+        try {
+            int userId = sharedPreferences.getInt("userId", -1);
+            PasswordCredentials passwordCredentials = new PasswordCredentials(username, url, password, description, name, userId);
+
+            if (dbManager.updatePassword(passwordId, passwordCredentials, userId)) {
+                showToast("Password successfully updated.");
+                startActivity(new Intent(EditPassworddActivity.this, ShowPasswordsActivity.class));
+                finish();
+            } else {
+                showToast("Failed to update password.");
+            }
+        } catch (Exception e) {
+            Log.e("TAG", "Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Validates user input for updating the password.
+     *
+     * @return true if inputs are valid, false otherwise.
+     */
+    private boolean validateInput() {
+        String url = Objects.requireNonNull(editTextUrl.getText()).toString();
+        String password = Objects.requireNonNull(editTextPassword.getText()).toString();
         String name = Objects.requireNonNull(editTextName.getText()).toString();
 
-        if (pass.isEmpty()) {
-            textInputLayoutPass.setError("Por favor, ingresa una contraseña");
-            textInputLayoutName.setError(null);
-            textInputLayoutUrl.setError(null);
+        if (password.isEmpty()) {
+            textInputLayoutPassword.setError("Please enter a password.");
+            clearOtherErrors(textInputLayoutPassword);
             return false;
         } else if (name.isEmpty()) {
-            textInputLayoutName.setError("Por favor, ingresa un nombre");
-            textInputLayoutPass.setError(null);
-            textInputLayoutUrl.setError(null);
+            textInputLayoutName.setError("Please enter a name.");
+            clearOtherErrors(textInputLayoutName);
             return false;
         } else if (!url.isEmpty() && !url.matches("((https?://)?(www\\.)?[a-zA-Z0-9-]+(\\.[a-z]{2,})+(/\\S*)?)")) {
-            textInputLayoutUrl.setError("Por favor, ingresa una URL válida");
-            textInputLayoutName.setError(null);
-            textInputLayoutPass.setError(null);
+            textInputLayoutUrl.setError("Please enter a valid URL.");
+            clearOtherErrors(textInputLayoutUrl);
             return false;
         } else {
-            textInputLayoutName.setError(null);
-            textInputLayoutUrl.setError(null);
-            textInputLayoutPass.setError(null);
+            clearAllErrors();
             return true;
         }
     }
 
+    private void clearOtherErrors(TextInputLayout layoutToSkip) {
+        if (layoutToSkip != textInputLayoutName) textInputLayoutName.setError(null);
+        if (layoutToSkip != textInputLayoutUrl) textInputLayoutUrl.setError(null);
+    }
+
+    private void clearAllErrors() {
+        textInputLayoutName.setError(null);
+        textInputLayoutUrl.setError(null);
+        textInputLayoutPassword.setError(null);
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(EditPasswordsActivity.this, message, Toast.LENGTH_SHORT).show();
+    }
 }
