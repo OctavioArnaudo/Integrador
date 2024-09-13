@@ -5,54 +5,83 @@ import android.util.Log;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+/**
+ * Utility class for displaying SweetAlertDialogs.
+ */
 public class ShowAlertsUtility {
 
-    public static void mostrarSweetAlert(Context context, int tipo, String titulo, String mensaje, SweetAlertDialog.OnSweetClickListener listener) {
-        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, tipo);
-        sweetAlertDialog.setTitleText(titulo);
-        sweetAlertDialog.setContentText(mensaje);
+    private static final String TAG = "ShowAlertsUtility";
 
-        sweetAlertDialog.setConfirmText("Aceptar");
+    /**
+     * Shows a SweetAlertDialog with a single confirmation button.
+     *
+     * @param context  The context in which the dialog should be shown.
+     * @param type     The type of SweetAlertDialog (e.g., SweetAlertDialog.ERROR_TYPE).
+     * @param title    The title of the dialog.
+     * @param message  The message to be displayed in the dialog.
+     * @param listener Optional listener for the confirmation button click.
+     */
+    public static void showAlert(Context context, int type, String title, String message, SweetAlertDialog.OnSweetClickListener listener) {
+        if (context == null) {
+            Log.e(TAG, "Context is null in showAlert");
+            return;
+        }
 
-        sweetAlertDialog.setConfirmClickListener(sweetAlertDialog1 -> {
-            sweetAlertDialog1.dismissWithAnimation();
+        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, type);
+        sweetAlertDialog.setTitleText(title);
+        sweetAlertDialog.setContentText(message);
+        sweetAlertDialog.setConfirmText("Accept");
+
+        sweetAlertDialog.setConfirmClickListener(dialog -> {
+            dialog.dismissWithAnimation();
             if (listener != null) {
-                listener.onClick(sweetAlertDialog1);
+                listener.onClick(dialog);
             }
         });
 
         sweetAlertDialog.show();
     }
 
-    public static SweetAlertDialog mostrarSweetAlertDeletePassword(Context context, int tipo, String titulo, String mensaje, SweetAlertDialog.OnSweetClickListener confirmListener, SweetAlertDialog.OnSweetClickListener cancelListener) {
-        if (context != null) {
-            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, tipo);
-            sweetAlertDialog.setTitleText(titulo);
-            sweetAlertDialog.setContentText(mensaje);
-            sweetAlertDialog.setConfirmText("Aceptar");
-            sweetAlertDialog.setCancelText("Cancelar");
-
-            sweetAlertDialog.setConfirmClickListener(sweetAlertDialog1 -> {
-                sweetAlertDialog1.dismissWithAnimation();
-                if (confirmListener != null) {
-                    confirmListener.onClick(sweetAlertDialog1);
-                }
-            });
-
-            sweetAlertDialog.setCancelClickListener(sweetAlertDialog1 -> {
-                sweetAlertDialog1.dismissWithAnimation();
-                if (cancelListener != null) {
-                    cancelListener.onClick(sweetAlertDialog1);
-                }
-            });
-
-            sweetAlertDialog.show();
-
-            return sweetAlertDialog; // Devuelve la instancia de la alerta
-        } else {
-            Log.e("ShowAlertsUtility", "El contexto es nulo en mostrarSweetAlertDeletePassword");
+    /**
+     * Shows a SweetAlertDialog with both confirm and cancel buttons.
+     *
+     * @param context         The context in which the dialog should be shown.
+     * @param type            The type of SweetAlertDialog (e.g., SweetAlertDialog.WARNING_TYPE).
+     * @param title           The title of the dialog.
+     * @param message         The message to be displayed in the dialog.
+     * @param confirmListener Listener for the confirm button click.
+     * @param cancelListener  Listener for the cancel button click.
+     * @return The SweetAlertDialog instance.
+     */
+    public static SweetAlertDialog showAlertWithOptions(Context context, int type, String title, String message,
+                                                        SweetAlertDialog.OnSweetClickListener confirmListener,
+                                                        SweetAlertDialog.OnSweetClickListener cancelListener) {
+        if (context == null) {
+            Log.e(TAG, "Context is null in showAlertWithOptions");
             return null;
         }
-    }
 
+        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, type);
+        sweetAlertDialog.setTitleText(title);
+        sweetAlertDialog.setContentText(message);
+        sweetAlertDialog.setConfirmText("Accept");
+        sweetAlertDialog.setCancelText("Cancel");
+
+        sweetAlertDialog.setConfirmClickListener(dialog -> {
+            dialog.dismissWithAnimation();
+            if (confirmListener != null) {
+                confirmListener.onClick(dialog);
+            }
+        });
+
+        sweetAlertDialog.setCancelClickListener(dialog -> {
+            dialog.dismissWithAnimation();
+            if (cancelListener != null) {
+                cancelListener.onClick(dialog);
+            }
+        });
+
+        sweetAlertDialog.show();
+        return sweetAlertDialog;
+    }
 }
