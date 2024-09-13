@@ -35,245 +35,194 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class ShowPasswordsActivity extends AppCompatActivity {
 
-    FloatingActionButton btnA;
-    private ImageView imageView;
-    private ImageButton imageButton;
+    private FloatingActionButton addButton;
+    private ImageView menuIcon;
+    private ImageButton eyeIcon;
+    private ImageButton editIcon;
+    private ImageButton deleteIcon;
     private DbManager dbManager;
     private ScrollView scrollView;
-
-    private ImageButton iconEye;
-    private ImageButton iconPen;
-    private ImageButton iconTrash;
+    private TextInputEditText searchEditText;
     private List<PasswordResponse> passwords;
     private int userId;
-    private List<PasswordResponse> passwordList; // lista de objetos PasswordResponse
-    private TextInputEditText textSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_passwords);
+        setContentView(R.layout.activity_show_passwords);
 
-        // Inicializa el DbManager y otros elementos de la actividad.
+        // Initialize DbManager and UI elements
         dbManager = new DbManager(this);
+        TableLayout passwordTable = findViewById(R.id.tableLayout);
+        TextInputLayout searchInputLayout = findViewById(R.id.textInputLayoutName);
+        searchEditText = findViewById(R.id.editTextSearch);
 
-        TableLayout tableLayout = findViewById(R.id.tableLayout); //busca el id del tablelayout
-        TextInputLayout textInputLayout = findViewById(R.id.textInputLayout);
-        EditText editTextSearch = findViewById(R.id.editTextSearch);
-
-        // Agrega el TextWatcher al EditText para filtrar contraseñas
-        editTextSearch.addTextChangedListener(new InputTextWatcher(textInputLayout) {
+        // Set up the TextWatcher to filter passwords
+        searchEditText.addTextChangedListener(new InputTextWatcher(searchInputLayout) {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Llama al método filterPasswords para obtener la lista filtrada
                 String searchText = s.toString().trim();
                 List<PasswordResponse> filteredPasswords = filterPasswords(passwords, searchText);
-
-                // Muestra las contraseñas filtradas
-                showPasswords(filteredPasswords, userId);
+                displayPasswords(filteredPasswords);
             }
         });
 
-        // Nombre del SharedPreferences
+        // Retrieve user ID from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("Storage", MODE_PRIVATE);
-
-        //Comprobar si la clave "userId" existe
         if (sharedPreferences.contains("userId")) {
-            // Obtener el valor de "userId" de SharedPreferences
-            int userId = sharedPreferences.getInt("userId", -1);
-            Log.i("TAG", "Mostrando las contraseñas del usuario Id: " + userId);
+            userId = sharedPreferences.getInt("userId", -1);
+            Log.i("TAG", "Displaying passwords for user ID: " + userId);
             passwords = dbManager.getPasswordsListForUserId(userId);
-
-            if (passwords.size() > 0) {
-                Log.i("TAG", "La lista tiene: " + passwords.size());
-            } else {
-                Log.i("TAG", "La lista llega VACIA");
-            }
-
-            showPasswords(passwords, userId);
-
+            Log.i("TAG", "Password list size: " + passwords.size());
+            displayPasswords(passwords);
         } else {
-            // La clave "userId" no existe
-            Log.e("ShowPasswordsActivity", "La clave 'userId' no existe");
+            Log.e("ShowPasswordsActivity", "User ID not found in SharedPreferences");
         }
-        MaterialButton fabAgregar = findViewById(R.id.btn_add);
 
-        fabAgregar.setOnClickListener(view -> {
+        // Set up the add button
+        addButton = findViewById(R.id.btn_add);
+        addButton.setOnClickListener(view -> {
             Intent intent = new Intent(ShowPasswordsActivity.this, RegisterPasswordActivity.class);
             startActivity(intent);
         });
-        imageView = findViewById(R.id.menu_view);
-        imageView.setOnClickListener(view -> {
-            PopupMenu popupMenu = new PopupMenu(ShowPasswordsActivity.this, imageView);
+
+        // Set up the menu icon
+        menuIcon = findViewById(R.id.menu_view);
+        menuIcon.setOnClickListener(view -> {
+            PopupMenu popupMenu = new PopupMenu(ShowPasswordsActivity.this, menuIcon);
             popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
             popupMenu.setOnMenuItemClickListener(item -> {
                 int itemId = item.getItemId();
                 if (itemId == R.id.option_1) {
-                    // Abre la actividad AboutActivity
-                    Intent intent1 = new Intent(ShowPasswordsActivity.this, AboutActivity.class);
-                    startActivity(intent1);
+                    Intent aboutIntent = new Intent(ShowPasswordsActivity.this, AboutActivity.class);
+                    startActivity(aboutIntent);
                     return true;
                 } else if (itemId == R.id.option_2) {
-                    // Abre la actividad MainActivity (
-                    Intent intent2 = new Intent(ShowPasswordsActivity.this, MainActivity.class);
-                    startActivity(intent2);
+                    Intent mainIntent = new Intent(ShowPasswordsActivity.this, MainActivity.class);
+                    startActivity(mainIntent);
                     return true;
                 } else {
                     return false;
                 }
             });
-
-            // Mostrar el menú emergente
             popupMenu.show();
         });
-        ScrollView scrollView = findViewById(R.id.scrollView);
+
+        // Set up scroll view indicator
+        scrollView = findViewById(R.id.scrollView);
         ImageView scrollIndicator = findViewById(R.id.scrollIndicator);
         scrollView.post(() -> {
             if (scrollView.getChildAt(0).getHeight() > scrollView.getHeight()) {
-                // El contenido es más grande que la vista, muestra el indicador
                 scrollIndicator.setVisibility(View.VISIBLE);
             }
         });
         scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
-            if (scrollView.getChildAt(0).getBottom()
-                    <= (scrollView.getHeight() + scrollView.getScrollY())) {
-                // El contenido se encuentra al final, gira el indicador 180 grados
+            if (scrollView.getChildAt(0).getBottom() <= (scrollView.getHeight() + scrollView.getScrollY())) {
                 scrollIndicator.animate().rotation(180).start();
             } else {
-                // El contenido se puede desplazar, muestra el indicador
                 scrollIndicator.setVisibility(View.VISIBLE);
-                // El contenido se puede desplazar, restaura la rotación a 0 grados
                 scrollIndicator.animate().rotation(0).start();
             }
         });
     }
 
-    private void showPasswords(List<PasswordResponse> passwords, int userId) {
+    private void displayPasswords(List<PasswordResponse> passwords) {
         try {
-            TableLayout tableLayout = findViewById(R.id.tableLayout);
+            TableLayout passwordTable = findViewById(R.id.tableLayout);
             TextView noPasswordsText = findViewById(R.id.txtNoPassword);
-            ImageView circleExclamation = findViewById(R.id.imageView);
-            tableLayout.removeAllViews();
+            ImageView noPasswordsImage = findViewById(R.id.imageView);
+            passwordTable.removeAllViews();
 
             if (passwords.isEmpty()) {
                 noPasswordsText.setVisibility(View.VISIBLE);
-                circleExclamation.setVisibility(View.VISIBLE);
-                tableLayout.setVisibility(View.GONE);
+                noPasswordsImage.setVisibility(View.VISIBLE);
+                passwordTable.setVisibility(View.GONE);
             } else {
                 noPasswordsText.setVisibility(View.GONE);
-                circleExclamation.setVisibility(View.GONE);
-                tableLayout.setVisibility(View.VISIBLE);
+                noPasswordsImage.setVisibility(View.GONE);
+                passwordTable.setVisibility(View.VISIBLE);
 
                 LayoutInflater inflater = LayoutInflater.from(this);
-
-                for (int i = 0; i < passwords.size(); i++) {
-                    PasswordResponse pwd = passwords.get(i);
+                for (PasswordResponse password : passwords) {
                     TableRow row = (TableRow) inflater.inflate(R.layout.row_password, null);
 
-                    iconEye = row.findViewById(R.id.icon_eye);
-                    iconPen = row.findViewById(R.id.icon_pen);
-                    iconTrash = row.findViewById(R.id.icon_trash);
+                    eyeIcon = row.findViewById(R.id.icon_eye);
+                    editIcon = row.findViewById(R.id.icon_pen);
+                    deleteIcon = row.findViewById(R.id.icon_trash);
 
-                    TextView nombreTextView = row.findViewById(R.id.textView);
-                    // Si el texto es más largo que 10 caracteres muestra 10 caracteres y 3 puntos al final
-                    if (pwd.getName().length() > 10) {
-                        String shortenedText = pwd.getName().substring(0, 10) + "...";
-                        nombreTextView.setText(shortenedText);
+                    TextView nameTextView = row.findViewById(R.id.textView);
+                    String name = password.getName();
+                    if (name.length() > 10) {
+                        nameTextView.setText(name.substring(0, 10) + "...");
                     } else {
-                        nombreTextView.setText(pwd.getName());
+                        nameTextView.setText(name);
                     }
-                    assignButtons(pwd.getId(), userId);
+                    setupActionIcons(password.getId());
 
-                    tableLayout.addView(row);
+                    passwordTable.addView(row);
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            Log.e("ShowPasswordsActivity", "Database error: " + e.getMessage());
+            ShowAlertsUtility.showErrorAlert(this, "Database Error", "An error occurred while fetching passwords.");
         } catch (Exception e) {
-            Log.e("TAG", "ERROR: " + e.getMessage());
+            Log.e("ShowPasswordsActivity", "Unexpected error: " + e.getMessage());
+            ShowAlertsUtility.showErrorAlert(this, "Error", "An unexpected error occurred.");
         }
     }
 
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        dbManager.close(); // Cierra la base de datos al destruir la actividad.
+        dbManager.close(); // Close database when activity is destroyed
     }
 
-    private void assignButtons(int id, int userId) {
-        iconTrash.setTag(id); // Donde 'id' es el ID de la contraseña correspondiente
+    private void setupActionIcons(int passwordId) {
+        deleteIcon.setTag(passwordId);
 
-        // onclick para abrir la actividad del ViewPassActivity
-        iconEye.setOnClickListener(v -> {
-
-            // Crea un intent para abrir la actividad ViewPassActivity
-            Intent intent = new Intent(ShowPasswordsActivity.this, ViewPassActivity.class);
-            // Agrega el id como un extra en el intent
-            intent.putExtra("idColumna", id);
-            // Agrega userId como un extra en el intent
-            intent.putExtra("userId", userId);
-            // Inicia la actividad ViewPassActivity
-            startActivity(intent);
+        eyeIcon.setOnClickListener(v -> {
+            Intent viewIntent = new Intent(ShowPasswordsActivity.this, ViewPassActivity.class);
+            viewIntent.putExtra("passwordId", passwordId);
+            viewIntent.putExtra("userId", userId);
+            startActivity(viewIntent);
         });
 
-        // onclick del el editar
-        iconPen.setOnClickListener(v -> {
-            // Crea un intent para abrir la actividad ViewPassActivity
-            Intent intent = new Intent(ShowPasswordsActivity.this, EditPasswordActivity.class);
-            // Agrega el id como un extra en el intent
-            intent.putExtra("idColumna", id);
-            // Agrega userId como un extra en el intent
-            intent.putExtra("userId", userId);
-            // Inicia la actividad ViewPassActivity
-            startActivity(intent);
-
+        editIcon.setOnClickListener(v -> {
+            Intent editIntent = new Intent(ShowPasswordsActivity.this, EditPasswordActivity.class);
+            editIntent.putExtra("passwordId", passwordId);
+            editIntent.putExtra("userId", userId);
+            startActivity(editIntent);
         });
 
-        // Onclick Borrar
-        iconTrash.setOnClickListener(v -> {
+        deleteIcon.setOnClickListener(v -> {
             int idToDelete = (int) v.getTag();
-
-            // Muestra la alerta para el borrado de la contraseña.
-            ShowAlertsUtility.mostrarSweetAlertDeletePassword(ShowPasswordsActivity.this, 3, "¿Estás seguro de que deseas eliminar esta contraseña?", "Si borras la contraseña, ya no podrás revertirlo",
+            ShowAlertsUtility.showDeleteConfirmationAlert(this,
+                    "Are you sure you want to delete this password?",
+                    "This action cannot be undone.",
                     sweetAlertDialog -> {
-                        // Acción de confirmación (Aceptar)
                         try {
                             dbManager.deletePassword(idToDelete);
                             passwords = dbManager.getPasswordsListForUserId(userId);
-                            showPasswords(passwords, userId);
-
-                            // Muestra una segunda alerta de confirmación (Tipo 2) después de eliminar la contraseña
-                            ShowAlertsUtility.mostrarSweetAlert(ShowPasswordsActivity.this, 2, "Operación Completada", "La contraseña se ha eliminado correctamente", SweetAlertDialog::dismissWithAnimation);
+                            displayPasswords(passwords);
+                            ShowAlertsUtility.showSuccessAlert(this, "Success", "Password deleted successfully.");
                         } catch (Exception e) {
-                            Log.e("Error al borrar contraseña", Objects.requireNonNull(e.getMessage()));
-                            ShowAlertsUtility.mostrarSweetAlert(ShowPasswordsActivity.this, 1, "Error", "Se ha producido un error", SweetAlertDialog::dismissWithAnimation);
+                            Log.e("ShowPasswordsActivity", "Error deleting password: " + e.getMessage());
+                            ShowAlertsUtility.showErrorAlert(this, "Error", "An error occurred while deleting the password.");
                         }
                     },
-                    sweetAlertDialog -> {
-                        // Acción de cancelación (Cancelar)
-                        ShowAlertsUtility.mostrarSweetAlert(ShowPasswordsActivity.this, 1, "Operación Cancelada", "Se ha cancelado la operación", SweetAlertDialog::dismissWithAnimation);
-                    }
-            );
+                    sweetAlertDialog -> ShowAlertsUtility.showInfoAlert(this, "Cancelled", "Operation cancelled."));
         });
-
     }
 
-    public List<PasswordResponse> filterPasswords(List<PasswordResponse> passwords, String
-            word) {
-        List<PasswordResponse> filterpass = new ArrayList<>();
+    private List<PasswordResponse> filterPasswords(List<PasswordResponse> passwords, String query) {
+        List<PasswordResponse> filteredList = new ArrayList<>();
+        String queryLower = query.toLowerCase();
 
         for (PasswordResponse password : passwords) {
-            // Cambia a minúsculas tanto el nombre de la contraseña como la palabra buscada
-            String passwordName = password.getName().toLowerCase();
-            String searchWord = word.toLowerCase();
-
-            // Verifica si el nombre de la contraseña contiene la palabra buscada
-            if (passwordName.contains(searchWord)) {
-                filterpass.add(password); // Agrega el objeto coincidente a la lista filterpass
+            if (password.getName().toLowerCase().contains(queryLower)) {
+                filteredList.add(password);
             }
         }
-        return filterpass;
+        return filteredList;
     }
-
 }
-
-
