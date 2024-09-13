@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:paddingVertical="16dp">
+
+    <TextView
+        android:id="@+id/textViewPasswordName"
+        android:layout_width="130dp"
+        android:layout_height="30dp"
+        android:text="@string/password_name"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="6dp">
+
+        <ImageButton
+            android:id="@+id/iconEye"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="38dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/baseline_visibility_24"
+            android:contentDescription="@string/access_password"
+            app:tint="@color/textAccessibility" />
+
+        <ImageButton
+            android:id="@+id/iconPen"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="23dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/edit_password"
+            android:src="@drawable/pen"
+            app:tint="@color/red" />
+
+        <ImageButton
+            android:id="@+id/iconTrash"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="23dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/delete_password"
+            android:src="@drawable/trash_solid"
+            app:tint="@color/signAccessibility" />
+    </LinearLayout>
+
+</TableRow>

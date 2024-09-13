@@ -19,4 +19,36 @@
     <color name="errorColor">#F6A7A1</color>
     //Color rojo boton agregar
     <color name="green_accessibility">#578200</color>
+
+    <!-- General Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="grey_light">#D3D3D3</color>
+    <color name="grey">#B0B0B0</color>
+
+    <!-- Primary Colors -->
+    <color name="red">#FF0000</color>
+    <color name="text_accessibility">#4A4A4A</color>
+
+    <!-- Button Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="red">#FF0000</color>
+    <color name="black">#000000</color>
+    <color name="grey_light">#D3D3D3</color>
+    <color name="grey">#B0B0B0</color>
+
+    <!-- Miscellaneous Colors -->
+    <color name="text_accesibility">#4A4A4A</color>
+    <color name="tint_success">#006400</color>
+
+<resources>
+    <color name="white">#FFFFFF</color>
+    <color name="red">#FF0000</color>
+    <color name="black">#000000</color>
+    <color name="greyLight">#D3D3D3</color>
+    <color name="textAccessibility">#0000FF</color> <!-- Assuming this is a color used for accessibility text -->
+    <color name="grey">#808080</color>
+</resources>
+
+	
 </resources>
