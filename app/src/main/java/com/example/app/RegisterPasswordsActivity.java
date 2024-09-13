@@ -24,142 +24,141 @@ import com.example.app.util.ShowAlertsUtility;
 
 import java.util.Objects;
 
-public class RegisterPasswordActivity extends AppCompatActivity {
+public class RegisterPasswordsActivity extends AppCompatActivity {
 
-    // Variables de instancia para manejar la base de datos y las vistas
+    // Instance variables for managing the database and UI elements
     private DbManager dbManager;
     private TextInputEditText editTextName;
-    private TextInputEditText editTextUsuario;
+    private TextInputEditText editTextUsername;
     private TextInputEditText editTextPassword;
     private TextInputEditText editTextUrl;
-    private TextInputEditText editTextDescripcion;
+    private TextInputEditText editTextDescription;
     private TextInputLayout textInputLayoutName;
     private TextInputLayout textInputLayoutUrl;
-    private TextInputLayout textInputLayoutPass;
+    private TextInputLayout textInputLayoutPassword;
 
-    Button btnAtras;
-    Button btnGuardar;
+    private Button btnBack;
+    private Button btnSave;
 
     /**
-     * Método llamado cuando se crea la actividad. Se inicializan las vistas y se configuran
-     * los Listeners para los botones.
+     * Called when the activity is first created. Initializes UI elements and sets up event listeners.
      *
-     * @param savedInstanceState Objeto que contiene el estado previamente guardado de la actividad.
+     * @param savedInstanceState Bundle containing the activity's previously saved state.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_password);
+        setContentView(R.layout.activity_add_passwords);
 
-        // Inicializacion de variables
+        // Initialize variables
         dbManager = new DbManager(getApplicationContext());
         editTextName = findViewById(R.id.editTextName);
-        editTextUsuario = findViewById(R.id.editTextUsuario);
+        editTextUsername = findViewById(R.id.editTextUsername);
         editTextPassword = findViewById(R.id.editTextPassword);
         editTextUrl = findViewById(R.id.editTextUrl);
-        editTextDescripcion = findViewById(R.id.editTextDescripcion);
+        editTextDescription = findViewById(R.id.editTextDescription);
         textInputLayoutName = findViewById(R.id.textInputLayoutName);
-        textInputLayoutUrl = findViewById(R.id.textInputLayout4);
-        textInputLayoutPass = findViewById(R.id.textInputLayout3);
-        ImageView imageViewGenerar2 = findViewById(R.id.imageViewGenerar2);
+        textInputLayoutUrl = findViewById(R.id.textInputLayoutUrl);
+        textInputLayoutPassword = findViewById(R.id.textInputLayoutPassword);
+        ImageView imageViewGenerate = findViewById(R.id.imageViewGenerate);
 
-        // Agrega TextWatcher a los EditText para validar en tiempo real
+        // Add TextWatchers to EditTexts for real-time validation
         editTextName.addTextChangedListener(new InputTextWatcher(textInputLayoutName));
-        editTextPassword.addTextChangedListener(new InputTextWatcher(textInputLayoutPass));
+        editTextPassword.addTextChangedListener(new InputTextWatcher(textInputLayoutPassword));
         editTextUrl.addTextChangedListener(new InputTextWatcher(textInputLayoutUrl));
 
-        // Método para generar un password aleatorio
-        imageViewGenerar2.setOnClickListener(v -> {
+        // Set up the button to generate a random password
+        imageViewGenerate.setOnClickListener(v -> {
             String randomPassword = HashUtility.generateRandomPassword(12);
             editTextPassword.setText(randomPassword);
-            // Establece la selección al final del texto
             editTextPassword.setSelection(Objects.requireNonNull(editTextPassword.getText()).length());
-            Toast.makeText(RegisterPasswordActivity.this, "Contraseña generada con éxito", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterPasswordActivity.this, "Password generated successfully", Toast.LENGTH_SHORT).show();
         });
 
-        // Configuración del botón para regresar a la actividad ShowPasswordsActivity
-        btnAtras = findViewById(R.id.btnBackSave);
-        btnAtras.setOnClickListener(view -> {
-            Intent intent = new Intent(RegisterPasswordActivity.this, ShowPasswordsActivity.class);
+        // Set up the button to navigate back to ShowPasswordsActivity
+        btnBack = findViewById(R.id.btnBackSave);
+        btnBack.setOnClickListener(view -> {
+            Intent intent = new Intent(RegisterPasswordsActivity.this, ShowPasswordsActivity.class);
             startActivity(intent);
         });
 
-        // Configuración del botón para guardar la contraseña
-        btnGuardar = findViewById(R.id.btn_guardar);
-        btnGuardar.setOnClickListener(view -> {
-            if (validateInputNewPass()) {
-                addPassword();
+        // Set up the button to save the password
+        btnSave = findViewById(R.id.btnSave);
+        btnSave.setOnClickListener(view -> {
+            if (isInputValid()) {
+                savePassword();
             }
         });
     }
 
     /**
-     * Método para validar las entradas del usuario al registrar una nueva contraseña.
+     * Validates user inputs when registering a new password.
      *
-     * @return true si las entradas son válidas, false si hay errores de validación.
+     * @return true if the inputs are valid; false otherwise.
      */
-    private boolean validateInputNewPass() {
+    private boolean isInputValid() {
         String url = Objects.requireNonNull(editTextUrl.getText()).toString();
-        String pass = Objects.requireNonNull(editTextPassword.getText()).toString();
+        String password = Objects.requireNonNull(editTextPassword.getText()).toString();
         String name = Objects.requireNonNull(editTextName.getText()).toString();
 
-        if (pass.isEmpty()) {
-            textInputLayoutPass.setError("Por favor, ingresa una contraseña");
+        if (password.isEmpty()) {
+            textInputLayoutPassword.setError("Please enter a password");
             return false;
         } else if (name.isEmpty()) {
-            textInputLayoutName.setError("Por favor, ingresa un nombre");
+            textInputLayoutName.setError("Please enter a name");
             return false;
         } else if (!url.isEmpty() && !url.matches("((https?://)?(www\\.)?[a-zA-Z0-9-]+(\\.[a-z]{2,})+(/\\S*)?)")) {
-            textInputLayoutUrl.setError("Por favor, ingresa una URL válida");
+            textInputLayoutUrl.setError("Please enter a valid URL");
             return false;
         }
         return true;
     }
 
     /**
-     * Método para registrar una nueva contraseña en la base de datos.
+     * Registers a new password in the database.
      */
-    private void addPassword() {
-        String ERROR = "Error al registrar la contraseña";
+    private void savePassword() {
+        final String ERROR_MESSAGE = "Error registering password";
         try {
             dbManager.open();
 
-            //obtengo el ID del usuario logueado
+            // Retrieve the logged-in user's ID
             SharedPreferences sharedPreferences = getSharedPreferences("Storage", Context.MODE_PRIVATE);
             int userId = sharedPreferences.getInt("userId", -1);
-            Log.i("TAG", "UserId desde addPassword: "+userId);
-            PasswordCredentials password = null;
+            Log.i("TAG", "UserId from savePassword: " + userId);
+
+            PasswordCredentials passwordCredentials = null;
             if (userId != -1) {
-                password = new PasswordCredentials(
-                        Objects.requireNonNull(editTextUsuario.getText()).toString(),
+                passwordCredentials = new PasswordCredentials(
+                        Objects.requireNonNull(editTextUsername.getText()).toString(),
                         Objects.requireNonNull(editTextUrl.getText()).toString(),
                         Objects.requireNonNull(editTextPassword.getText()).toString(),
-                        Objects.requireNonNull(editTextDescripcion.getText()).toString(),
+                        Objects.requireNonNull(editTextDescription.getText()).toString(),
                         Objects.requireNonNull(editTextName.getText()).toString(),
                         userId
                 );
             }
 
-            if (dbManager.passwordRegister(password)) {
-                // Mostrar un SweetAlertDialog para el registro exitoso de la contraseña
-                ShowAlertsUtility.mostrarSweetAlert(this, 2, "Registro exitoso", "El Password ha sido registrado correctamente", sweetAlertDialog -> {
+            if (dbManager.registerPassword(passwordCredentials)) {
+                // Display success message
+                ShowAlertsUtility.mostrarSweetAlert(this, 2, "Registration Successful", "The password has been successfully registered", sweetAlertDialog -> {
                     sweetAlertDialog.dismissWithAnimation();
-                    // Redirigir al usuario a la página de PasswordActivity
+                    // Redirect to ShowPasswordsActivity
                     Intent intent = new Intent(RegisterPasswordActivity.this, ShowPasswordsActivity.class);
                     startActivity(intent);
                     finish();
                 });
             }
         } catch (SQLiteException e) {
-            // Mostrar un SweetAlertDialog para errores de base de datos
-            mostrarSweetAlert(this, 1, ERROR, "Fallo el registro en la base de datos",null);
+            // Display error message for database errors
+            mostrarSweetAlert(this, 1, ERROR_MESSAGE, "Database registration failed", null);
             e.printStackTrace();
-        } catch (HashUtility.HashingException e){
-            mostrarSweetAlert(this, 1, ERROR, "Fallo al encriptar la contraseña", null);
+        } catch (HashUtility.HashingException e) {
+            mostrarSweetAlert(this, 1, ERROR_MESSAGE, "Failed to encrypt the password", null);
         } catch (Exception e) {
-            // Mostrar un SweetAlertDialog para errores inesperados
+            // Display generic error message
             e.printStackTrace();
-            mostrarSweetAlert(this, 1, "Error", "Ocurrió un error inesperado.", null);
+            mostrarSweetAlert(this, 1, "Error", "An unexpected error occurred.", null);
         } finally {
             dbManager.close();
         }
