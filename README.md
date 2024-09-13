@@ -1,8 +1,8 @@
-# My Application
+# FourTwoOne
 
 ## Descripcion:
 
-El sistema MyApplication es una herramienta diseñada para la creación, almacenamiento y gestión de contraseñas seguras. Esta aplicación proporciona a los usuarios una interfaz intuitiva y amigable que les permite almacenar, organizar y acceder de manera conveniente a sus credenciales de inicio de sesión.
+Se trata de una herramienta diseñada para la creación, almacenamiento y gestión de contraseñas seguras. Esta aplicación proporciona a los usuarios una interfaz intuitiva y amigable que les permite almacenar, organizar y acceder de manera conveniente a sus credenciales de inicio de sesión.
 
 ## Tecnologías:
 

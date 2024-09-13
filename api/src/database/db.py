@@ -9,7 +9,7 @@ def get_connection():
             password=config('DB_PASSWORD', default='root'),
             host=config('DB_HOST', default='localhost'),
             port=config('DB_PORT', default='5432'),
-            database=config('DB_NAME', default='myapplication')
+            database=config('DB_NAME', default='app')
         )
         return connection
     except (Exception, DatabaseError) as error:

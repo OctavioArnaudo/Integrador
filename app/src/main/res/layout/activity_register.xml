@@ -8,7 +8,7 @@
     tools:layout_editor_absoluteY="25dp">
 
     <View
-        android:id="@+id/viewRed"
+        android:id="@+id/viewRedBackground"
         android:layout_width="wrap_content"
         android:layout_height="365dp"
         android:background="@color/red"
@@ -19,10 +19,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0" />
 
-    <!-- Título passleeper-->
+    <!-- Title -->
 
-
-    <!-- Tarjeta blanca contenedora de los inputs-->
     <TextView
         android:id="@+id/textTitle"
         android:layout_width="wrap_content"
@@ -40,7 +38,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardViewReg"
+        android:id="@+id/cardViewRegistration"
         android:layout_width="319dp"
         android:layout_height="550dp"
         android:layout_marginStart="16dp"
@@ -55,24 +53,24 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.498">
 
-        <!--   Input iniciar sesión  -->
+        <!-- Fingerprint Switch -->
 
         <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switch1"
+            android:id="@+id/switchFingerprint"
             android:layout_width="283dp"
             android:layout_height="48dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="390dp"
             android:layout_marginEnd="16dp"
             android:button="@drawable/fingerprint_solid"
-            android:buttonTint="@color/text_accesibility"
+            android:buttonTint="@color/textAccessibility"
             android:checked="true"
             android:showText="false"
             android:text="@string/fingerprint"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="@color/text_accesibility"
+            android:textColor="@color/textAccessibility"
             android:textIsSelectable="false"
             android:textOff="@string/off"
             android:textOn="@string/on"
@@ -82,7 +80,7 @@
             tools:visibility="visible" />
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardViewReg2"
+            android:id="@+id/cardViewHeader"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginBottom="60dp"
@@ -90,49 +88,47 @@
             app:cardCornerRadius="30dp"
             app:cardElevation="8dp">
 
+            <!-- Header Layout -->
 
-            <!-- Inicia configuración del Título del registro-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical">
 
-                <!-- Boton para ir a la pagina principal -->
+                <!-- Home Button -->
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_home"
+                    android:id="@+id/buttonHome"
                     style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="60dp"
                     android:layout_height="70dp"
                     android:layout_marginStart="8dp"
                     android:backgroundTint="@color/red"
-                    android:contentDescription="@string/boton_guardar"
+                    android:contentDescription="@string/button_save"
                     android:elevation="12dp"
                     app:cornerRadius="30dp"
                     app:icon="@drawable/arrow"
                     app:iconGravity="start"
                     app:iconSize="30dp"
-
-
                     app:iconTint="@color/white"
                     tools:ignore="MissingConstraints" />
 
-                <!-- Texto del Título del registro-->
+                <!-- Header Text -->
+
                 <TextView
-                    android:id="@+id/textTitleReg"
+                    android:id="@+id/textHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="40dp"
                     android:text="@string/register"
-                    android:textColor="@color/text_accesibility"
+                    android:textColor="@color/textAccessibility"
                     android:textSize="30sp"
                     android:textStyle="italic" />
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Input Fields -->
 
-        <!-- Inicia configuración de la caja de los inputs-->
         <LinearLayout
             android:layout_width="300dp"
             android:layout_height="292dp"
@@ -142,32 +138,26 @@
             android:layout_marginBottom="16dp"
             android:orientation="vertical">
 
-            <!-- Primer campo de entrada -->
-
-            <!-- Segundo campo de entrada -->
-
-            <!-- Tercer campo de entrada -->
-
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInputLayoutReg"
+                android:id="@+id/textInputLayoutEmail"
                 android:layout_width="285dp"
                 android:layout_height="87dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="12dp"
-                android:hint="@string/correo"
-                android:textColor="@color/greyLigth"
+                android:hint="@string/email"
+                android:textColor="@color/greyLight"
                 app:boxCornerRadiusBottomEnd="25dp"
                 app:boxCornerRadiusBottomStart="25dp"
                 app:boxCornerRadiusTopEnd="25dp"
                 app:boxCornerRadiusTopStart="25dp"
-                app:boxStrokeColor="@color/greyLigth"
-                app:hintTextColor="@color/greyLigth"
-                app:startIconContentDescription="icono de correo"
-                app:startIconDrawable="@drawable/correo"
+                app:boxStrokeColor="@color/greyLight"
+                app:hintTextColor="@color/greyLight"
+                app:startIconContentDescription="@string/icon_email"
+                app:startIconDrawable="@drawable/email"
                 app:startIconTint="@color/red">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextUsernameReg"
+                    android:id="@+id/editTextUsername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
@@ -175,30 +165,30 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInputLayout2Reg"
+                android:id="@+id/textInputLayoutPassword"
                 android:layout_width="285dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="12dp"
                 android:hint="@string/password"
-                android:textColor="@color/greyLigth"
+                android:textColor="@color/greyLight"
                 app:boxCornerRadiusBottomEnd="25dp"
                 app:boxCornerRadiusBottomStart="25dp"
                 app:boxCornerRadiusTopEnd="25dp"
                 app:boxCornerRadiusTopStart="25dp"
-                app:boxStrokeColor="@color/greyLigth"
+                app:boxStrokeColor="@color/greyLight"
                 app:counterEnabled="false"
                 app:counterMaxLength="20"
                 app:endIconMode="password_toggle"
                 app:endIconTint="@color/grey"
                 app:errorEnabled="true"
-                app:hintTextColor="@color/greyLigth"
-                app:startIconContentDescription="Lock icon"
+                app:hintTextColor="@color/greyLight"
+                app:startIconContentDescription="@string/icon_lock"
                 app:startIconDrawable="@drawable/lock_solid"
                 app:startIconTint="@color/red">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editPasswordReg"
+                    android:id="@+id/editTextPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
@@ -206,78 +196,52 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInputLayout2Reg2"
+                android:id="@+id/textInputLayoutPasswordConfirm"
                 android:layout_width="285dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="12dp"
-                android:baselineAligned="false"
-                android:gravity="center"
-                android:hint="@string/password2"
-                android:textColor="@color/greyLigth"
+                android:hint="@string/password_confirm"
+                android:textColor="@color/greyLight"
                 app:boxCornerRadiusBottomEnd="25dp"
                 app:boxCornerRadiusBottomStart="25dp"
                 app:boxCornerRadiusTopEnd="25dp"
                 app:boxCornerRadiusTopStart="25dp"
-                app:boxStrokeColor="@color/greyLigth"
+                app:boxStrokeColor="@color/greyLight"
                 app:counterEnabled="false"
                 app:endIconMode="password_toggle"
                 app:endIconTint="@color/grey"
                 app:errorEnabled="true"
-                app:hintTextColor="@color/greyLigth"
-                app:startIconContentDescription="icono de bloqueado"
+                app:hintTextColor="@color/greyLight"
+                app:startIconContentDescription="@string/icon_lock"
                 app:startIconDrawable="@drawable/lock_solid"
                 app:startIconTint="@color/red">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editPasswordReg2"
+                    android:id="@+id/editTextPasswordConfirm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:textColor="@color/black" />
-
             </com.google.android.material.textfield.TextInputLayout>
-
-
         </LinearLayout>
 
+        <!-- Login Link -->
 
-        <!-- Texto link a login(activity principal)-->
         <TextView
-            android:id="@+id/linkLogin"
+            android:id="@+id/textLinkLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="110dp"
-            android:layout_marginTop="470dp"
-            android:contentDescription="@string/link_login"
-            android:text="@string/login"
+            android:layout_marginTop="8dp"
+            android:layout_gravity="center"
+            android:text="@string/link_login"
             android:textColor="@color/red"
             android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/materialButtonLogin"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.72"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/cardView" />
+            app:layout_constraintTop_toBottomOf="@+id/cardViewRegistration"
+            app:layout_constraintVertical_bias="0.82" />
     </com.google.android.material.card.MaterialCardView>
-
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnRegistrar"
-        style="@style/Widget.MaterialComponents.Button"
-        android:layout_width="230dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="435dp"
-        android:backgroundTint="@color/red"
-        android:text="@string/btn_register"
-        android:textColor="@color/white"
-        app:cardElevation="15dp"
-        app:cornerRadius="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/cardViewReg"
-        app:layout_constraintVertical_bias="0.487" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

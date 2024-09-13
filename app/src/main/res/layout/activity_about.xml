@@ -1,40 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/white">
 
     <TextView
-        android:id="@+id/textTitle11"
+        android:id="@+id/text_view_author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="550dp"
-        android:text="Octavio Arnaudo"
-        android:textColor="@color/text_accesibility"
+        android:text="@string/author_name"
+        android:textColor="@color/text_accessibility"
         android:textSize="18sp"
         android:textStyle="italic"
+        android:contentDescription="@string/author_name_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.853"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textTitle3"
+        android:id="@+id/text_view_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="400dp"
-        android:text="Un desarrollo de ISPC"
-        android:textColor="@color/text_accesibility"
+        android:text="@string/development_info"
+        android:textColor="@color/text_accessibility"
         android:textSize="24sp"
         android:textStyle="italic"
+        android:contentDescription="@string/development_info_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:id="@+id/viewRed"
+        android:id="@+id/view_red_background"
         android:layout_width="wrap_content"
         android:layout_height="365dp"
         android:background="@color/red"
@@ -45,8 +47,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0" />
 
+    <!-- App Name TextView -->
     <TextView
-        android:id="@+id/textTitle"
+        android:id="@+id/text_view_app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="256dp"
@@ -54,51 +57,79 @@
         android:textColor="@android:color/white"
         android:textSize="30sp"
         android:textStyle="italic"
+        android:contentDescription="@string/app_name_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textTitle14"
+        android:id="@+id/text_view_version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="296dp"
-        android:text="V 1.0"
+        android:text="@string/version_text"
         android:textColor="@android:color/white"
         android:textSize="30sp"
         android:textStyle="italic"
+        android:contentDescription="@string/version_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/image_view_logo"
         android:layout_width="334dp"
         android:layout_height="226dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="48dp"
-        android:contentDescription="Logotipo de la aplicación"
+        android:contentDescription="@string/app_logo_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/ic_myapplication_launcher_foreground" />
+        app:srcCompat="@mipmap/ic_app_launcher_foreground" />
+
+    <VideoView
+        android:id="@+id/video_view_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/video_view_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <!--
+    <WebView
+        android:id="@+id/web_view_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/web_view_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
+    -->
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_about"
+        android:id="@+id/button_about"
         style="@style/Widget.MaterialComponents.Button"
         android:layout_width="208dp"
         android:layout_height="51dp"
         android:layout_marginBottom="28dp"
         android:backgroundTint="@color/red"
-        android:text="Volver"
+        android:text="@string/button_text_back"
         android:textColor="@color/white"
+        android:contentDescription="@string/back_button_description"
         app:cardElevation="15dp"
         app:cornerRadius="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
