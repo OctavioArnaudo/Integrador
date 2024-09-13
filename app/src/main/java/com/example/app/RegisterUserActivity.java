@@ -24,111 +24,134 @@ import com.example.app.util.ShowAlertsUtility;
 
 import java.util.Objects;
 
-
 /**
- * Activity para registrar un nuevo usuario.
+ * Activity to handle user registration.
  */
-public class RegisterUserActivity extends AppCompatActivity {
-    private DbManager dbManager;
-    private TextInputEditText editTextEmail;
-    private TextInputEditText editTextPassword;
-    private TextInputEditText editTextPassword2;
-    private TextInputLayout textInputLayoutEmail;
-    private TextInputLayout textInputLayoutPwd;
-    private TextInputLayout textInputLayoutPwd2;
+public class RegisterUsersActivity extends AppCompatActivity {
 
-    private SwitchCompat switchBiometric;
-    private boolean biometricEnabled;
-    private boolean userWhitBiometrics;
+    private static final String TAG = "RegisterUsersActivity";
+    private DbManager databaseManager;
+    private TextInputEditText emailEditText;
+    private TextInputEditText passwordEditText;
+    private TextInputEditText confirmPasswordEditText;
+    private TextInputLayout emailInputLayout;
+    private TextInputLayout passwordInputLayout;
+    private TextInputLayout confirmPasswordInputLayout;
+
+    private SwitchCompat biometricSwitch;
+    private boolean isBiometricSupported;
+    private boolean isBiometricUserExisting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_register_users);
 
-        // Verificar si la autenticación biométrica está habilitada en este dispositivo
-        biometricEnabled = BiometricUtils.isBiometricPromptEnabled(this);
-        Log.i("TAG", "la biometria esta: " + biometricEnabled);
-        switchBiometric = findViewById(R.id.switch1);
+        initializeUIComponents();
+        configureBiometricSwitch();
+        setUpEventListeners();
+    }
 
-        // Inicialización de las variables
-        dbManager = new DbManager(getApplicationContext());
-        userWhitBiometrics = dbManager.userWhitBiometrics();
-        Log.i("TAG", "Existe usuario con biometria habilitada: " + userWhitBiometrics);
-        editTextEmail = findViewById(R.id.editTextUsernameReg);
-        editTextPassword = findViewById(R.id.editPasswordReg);
-        editTextPassword2 = findViewById(R.id.editPasswordReg2);
-        textInputLayoutEmail = findViewById(R.id.textInputLayoutReg);
-        textInputLayoutPwd = findViewById(R.id.textInputLayout2Reg);
-        textInputLayoutPwd2 = findViewById(R.id.textInputLayout2Reg2);
+    /**
+     * Initializes UI components and database manager.
+     */
+    private void initializeUIComponents() {
+        databaseManager = new DbManager(getApplicationContext());
+        emailEditText = findViewById(R.id.editTextUsernameReg);
+        passwordEditText = findViewById(R.id.editPasswordReg);
+        confirmPasswordEditText = findViewById(R.id.editPasswordReg2);
+        emailInputLayout = findViewById(R.id.textInputLayoutReg);
+        passwordInputLayout = findViewById(R.id.textInputLayout2Reg);
+        confirmPasswordInputLayout = findViewById(R.id.textInputLayout2Reg2);
+        biometricSwitch = findViewById(R.id.switch1);
 
-        // Agrega TextWatcher a los EditText para validación en tiempo real
-        editTextEmail.addTextChangedListener(new InputTextWatcher(textInputLayoutEmail));
-        editTextPassword.addTextChangedListener(new InputTextWatcher(textInputLayoutPwd));
-        editTextPassword2.addTextChangedListener(new InputTextWatcher(textInputLayoutPwd2));
+        // Add text watchers for real-time validation
+        emailEditText.addTextChangedListener(new InputTextWatcher(emailInputLayout));
+        passwordEditText.addTextChangedListener(new InputTextWatcher(passwordInputLayout));
+        confirmPasswordEditText.addTextChangedListener(new InputTextWatcher(confirmPasswordInputLayout));
+    }
 
-        //En esta Linea el swicht sera visible si tanto la biometria esta activa o si ningun usuario la tiene activada
-        switchBiometric.setVisibility(biometricEnabled && !userWhitBiometrics ? View.VISIBLE : View.GONE);
+    /**
+     * Configures the visibility of the biometric switch based on device support and existing user configuration.
+     */
+    private void configureBiometricSwitch() {
+        isBiometricSupported = BiometricUtils.isBiometricPromptEnabled(this);
+        isBiometricUserExisting = databaseManager.userWithBiometrics();
 
-        // Configuración del enlace para regresar al MainActivity
-        TextView linkLogin = findViewById(R.id.linkLogin);
-        linkLogin.setOnClickListener(view -> {
-            Intent intent = new Intent(RegisterUserActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
+        Log.i(TAG, "Biometric support status: " + isBiometricSupported);
+        Log.i(TAG, "Existing user with biometrics: " + isBiometricUserExisting);
 
-        // Configuración del botón para volver al MainActivity
-        MaterialButton btnHome = findViewById(R.id.btn_home);
-        btnHome.setOnClickListener(view -> {
-            Intent intent = new Intent(RegisterUserActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
+        biometricSwitch.setVisibility(isBiometricSupported && !isBiometricUserExisting ? View.VISIBLE : View.GONE);
+    }
 
-        // Configuración del botón de registro
-        Button btnRegistrar = findViewById(R.id.btnRegistrar);
-        btnRegistrar.setOnClickListener(v -> {
-            if (validateInput()) {
-                registerUser();
+    /**
+     * Sets up event listeners for the activity's UI elements.
+     */
+    private void setUpEventListeners() {
+        // Link to login activity
+        TextView loginLinkTextView = findViewById(R.id.linkLogin);
+        loginLinkTextView.setOnClickListener(view -> navigateToActivity(MainActivity.class));
+
+        // Button to navigate to home activity
+        MaterialButton homeButton = findViewById(R.id.btn_home);
+        homeButton.setOnClickListener(view -> navigateToActivity(MainActivity.class));
+
+        // Button to handle user registration
+        Button registerButton = findViewById(R.id.btnRegistrar);
+        registerButton.setOnClickListener(v -> {
+            if (isInputValid()) {
+                registerNewUser();
             }
         });
     }
 
     /**
-     * Método para validar las entradas del usuario.
+     * Navigates to a specified activity.
      *
-     * @return true si las entradas son válidas, false si hay errores de validación.
+     * @param activityClass The class of the activity to navigate to.
      */
-    private boolean validateInput() {
-        String email = Objects.requireNonNull(editTextEmail.getText()).toString();
-        String password = Objects.requireNonNull(editTextPassword.getText()).toString();
-        String password2 = Objects.requireNonNull(editTextPassword2.getText()).toString();
+    private void navigateToActivity(Class<?> activityClass) {
+        Intent intent = new Intent(RegisterUsersActivity.this, activityClass);
+        startActivity(intent);
+    }
 
-        //si no hay biometria ó hay un usuario ya utilizando la biometria pone el switch en false
-        if (!biometricEnabled || userWhitBiometrics) {
-            switchBiometric.setChecked(false);
+    /**
+     * Validates user input fields.
+     *
+     * @return true if input is valid, false otherwise.
+     */
+    private boolean isInputValid() {
+        String email = Objects.requireNonNull(emailEditText.getText()).toString();
+        String password = Objects.requireNonNull(passwordEditText.getText()).toString();
+        String confirmPassword = Objects.requireNonNull(confirmPasswordEditText.getText()).toString();
+
+        if (!isBiometricSupported || isBiometricUserExisting) {
+            biometricSwitch.setChecked(false);
         }
-        // Validación del correo electrónico
+
+        // Email validation
         if (TextUtils.isEmpty(email)) {
-            textInputLayoutEmail.setError("El email es necesario");
+            emailInputLayout.setError("Email is required.");
             return false;
         } else if (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
-            textInputLayoutEmail.setError("Por favor, ingresa un correo electrónico válido");
-            return false;
-        }
-        // Validación de las contraseñas
-        if (TextUtils.isEmpty(password)) {
-            textInputLayoutPwd.setError("La contraseña es necesaria");
-            return false;
-        } else if (!password.matches(".{8,}")) {
-            textInputLayoutPwd.setError("Mínimo 8 caracteres");
+            emailInputLayout.setError("Please enter a valid email address.");
             return false;
         }
 
-        if (TextUtils.isEmpty(password2)) {
-            textInputLayoutPwd2.setError("Por favor, confirma tu contraseña");
+        // Password validation
+        if (TextUtils.isEmpty(password)) {
+            passwordInputLayout.setError("Password is required.");
             return false;
-        } else if (!password.equals(password2)) {
-            textInputLayoutPwd2.setError("Las contraseñas no coinciden");
+        } else if (password.length() < 8) {
+            passwordInputLayout.setError("Password must be at least 8 characters.");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(confirmPassword)) {
+            confirmPasswordInputLayout.setError("Please confirm your password.");
+            return false;
+        } else if (!password.equals(confirmPassword)) {
+            confirmPasswordInputLayout.setError("Passwords do not match.");
             return false;
         }
 
@@ -136,43 +159,66 @@ public class RegisterUserActivity extends AppCompatActivity {
     }
 
     /**
-     * Método para registrar al usuario en la base de datos.
+     * Registers the user with the provided credentials.
      */
-    private void registerUser() {
-        String MSGERROR = "Error al registrar el usuario";
+    private void registerNewUser() {
+        String registrationErrorMessage = "Error registering user.";
         try {
-            dbManager.open();
-            UserCredentials user = new UserCredentials(Objects.requireNonNull(editTextEmail.getText()).toString(), Objects.requireNonNull(editTextPassword.getText()).toString());
+            databaseManager.open();
+            UserCredentials userCredentials = new UserCredentials(
+                    Objects.requireNonNull(emailEditText.getText()).toString(),
+                    Objects.requireNonNull(passwordEditText.getText()).toString()
+            );
 
-            if (dbManager.userRegister(user, switchBiometric.isChecked() ? 1 : 0)) {
-                ShowAlertsUtility.mostrarSweetAlert(this, 2, "Registro exitoso", "El usuario ha sido registrado correctamente", sweetAlertDialog -> {
-                    sweetAlertDialog.dismissWithAnimation();
-                    // Redirigir al usuario a la página de inicio de sesión
-                    Intent intent = new Intent(RegisterUserActivity.this, MainActivity.class);
-                    startActivity(intent);
-                });
+            boolean isRegistrationSuccessful = databaseManager.userRegister(userCredentials, biometricSwitch.isChecked() ? 1 : 0);
+
+            if (isRegistrationSuccessful) {
+                ShowAlertsUtility.showSuccessAlert(
+                        this,
+                        "Registration Successful",
+                        "User has been successfully registered.",
+                        sweetAlertDialog -> {
+                            sweetAlertDialog.dismissWithAnimation();
+                            navigateToActivity(MainActivity.class);
+                        }
+                );
             } else {
-                // Mostrar un SweetAlertDialog para el error de registro
-                ShowAlertsUtility.mostrarSweetAlert(this, 1, "Error en el registro", "El email " + user.getEmail() + " ya se encuentra registrado", null);
+                ShowAlertsUtility.showErrorAlert(
+                        this,
+                        "Registration Error",
+                        "The email " + userCredentials.getEmail() + " is already registered."
+                );
             }
         } catch (SQLiteException e) {
-            // Mostrar un SweetAlertDialog para errores de base de datos
-            ShowAlertsUtility.mostrarSweetAlert(this, 1, MSGERROR, "No se pudo registrar el usuario en la base de datos.", null);
-            e.printStackTrace();
+            ShowAlertsUtility.showErrorAlert(
+                    this,
+                    registrationErrorMessage,
+                    "Failed to register the user in the database."
+            );
+            Log.e(TAG, "Database error: ", e);
         } catch (HashUtility.SaltException e) {
-            // Mostrar un SweetAlertDialog para errores de generación de salt
-            ShowAlertsUtility.mostrarSweetAlert(this, 1, MSGERROR, "Error al generar el salt para la contraseña.", null);
+            ShowAlertsUtility.showErrorAlert(
+                    this,
+                    registrationErrorMessage,
+                    "Error generating salt for password."
+            );
+            Log.e(TAG, "Salt generation error: ", e);
         } catch (HashUtility.HashingException e) {
-            // Mostrar un SweetAlertDialog para errores de hash
-            ShowAlertsUtility.mostrarSweetAlert(this, 1, MSGERROR, "Error al hashear la contraseña.", null);
+            ShowAlertsUtility.showErrorAlert(
+                    this,
+                    registrationErrorMessage,
+                    "Error hashing the password."
+            );
+            Log.e(TAG, "Hashing error: ", e);
         } catch (Exception e) {
-            // Mostrar un SweetAlertDialog para errores inesperados
-            e.printStackTrace();
-            ShowAlertsUtility.mostrarSweetAlert(this, 1, "Error", "Ocurrió un error inesperado.", null);
+            ShowAlertsUtility.showErrorAlert(
+                    this,
+                    "Unexpected Error",
+                    "An unexpected error occurred."
+            );
+            Log.e(TAG, "Unexpected error: ", e);
         } finally {
-            dbManager.close();
+            databaseManager.close();
         }
     }
-
 }
-
