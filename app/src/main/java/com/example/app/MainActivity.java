@@ -7,174 +7,163 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.text.TextUtils;
+import android.widget.Toast;
+
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.example.app.data.db.DbManager;
 import com.example.app.util.BiometricUtils;
 import com.example.app.util.HashUtility;
 import com.example.app.util.InputTextWatcher;
-import android.text.TextUtils;
-import android.widget.Toast;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
-	private DbManager dbManager;
-	private TextInputEditText editTextEmail;
-	private TextInputEditText editTextPassword;
-	private TextInputLayout textInputLayoutEmail;
-	private TextInputLayout textInputLayoutPwd;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		Log.i("TAG", "app Iniciado");
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		// abro el storage
-		SharedPreferences sharedPreferences = getSharedPreferences("Storage", Context.MODE_PRIVATE);
+    private DbManager dbManager;
+    private TextInputEditText editTextEmail;
+    private TextInputEditText editTextPassword;
+    private TextInputLayout textInputLayoutEmail;
+    private TextInputLayout textInputLayoutPassword;
 
-		dbManager = new DbManager(getApplicationContext());
-		editTextEmail = findViewById(R.id.editTextUsername);
-		editTextPassword = findViewById(R.id.editPassword);
-		textInputLayoutEmail = findViewById(R.id.textInputLayout);
-		textInputLayoutPwd = findViewById(R.id.textInputLayout2);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        Log.i("TAG", "Application Started");
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-		// asigno el boton de la huella
-		Button btnBiometric = findViewById(R.id.fingerprint);
-		
-		// Agregamos TextWatcher a los EditText
-		editTextEmail.addTextChangedListener(new InputTextWatcher(textInputLayoutEmail));
-		editTextPassword.addTextChangedListener(new InputTextWatcher(textInputLayoutPwd));
+        initializeUI();
+        setupBiometricAuthentication();
+        setupLoginButton();
+        setupRegisterLink();
+    }
 
-		int bio = sharedPreferences.getInt("biometric",-1);
-		Log.i("TAG", "Login Biometric: "+bio);
+    private void initializeUI() {
+        SharedPreferences sharedPreferences = getSharedPreferences("Storage", Context.MODE_PRIVATE);
+        dbManager = new DbManager(getApplicationContext());
 
-		if(bio == 1) {
-			boolean biometricFinger = BiometricUtils.isBiometricPromptEnabled(MainActivity.this);
-			boolean userWhitBiometric = dbManager.userWhitBiometrics();
-			Log.i("TAG", "existe usuario con biometria: " + userWhitBiometric);
-			// Si el usuario ha configurado la preferencia para usar la autenticación biométrica
-			if (biometricFinger) {
-			// Mostrar el cuadro de diálogo de autenticación biométrica
-				this.BiometricAuth();
-			}
-			// y lo hago visible si existe la biometria y un usuario la tiene activada
-			btnBiometric.setVisibility(biometricFinger && userWhitBiometric ? View.VISIBLE : View.GONE);
-		}
+        editTextEmail = findViewById(R.id.editTextUsername);
+        editTextPassword = findViewById(R.id.editTextPassword);
+        textInputLayoutEmail = findViewById(R.id.textInputLayoutEmail);
+        textInputLayoutPassword = findViewById(R.id.textInputLayoutPassword);
 
-		// Si apretan el boton de la huella
-		btnBiometric.setOnClickListener(view -> this.BiometricAuth());
+        // Add TextWatchers for validation feedback
+        editTextEmail.addTextChangedListener(new InputTextWatcher(textInputLayoutEmail));
+        editTextPassword.addTextChangedListener(new InputTextWatcher(textInputLayoutPassword));
+    }
 
-		/*
-		Busca el botón de inicio de sesión en la interfaz de usuario y agrega un escuchador
-		para manejar el evento de clic.
-		*/
-		Button btnLogin = findViewById(R.id.btn_login_m);
-		btnLogin.setOnClickListener(v -> {
-			if (validateInput()) {// Verifica si la entrada del usuario es válida antes de intentar iniciar sesión.
-				try {
-					// Intenta iniciar sesión, manejando posibles excepciones de Hashing y NoSuchAlgorithmException.
-					login();
-				} catch (HashUtility.HashingException | NoSuchAlgorithmException e) {
-					// Lanza una RuntimeException en caso de excepción para propagar el error.
-					throw new RuntimeException(e);
-				}
-			}
-		});
-    
-		TextView linkRegister = findViewById(R.id.linkRegister);
+    private void setupBiometricAuthentication() {
+        Button btnBiometric = findViewById(R.id.fingerprint);
+        SharedPreferences sharedPreferences = getSharedPreferences("Storage", Context.MODE_PRIVATE);
 
-		linkRegister.setOnClickListener(view -> {
-			Intent intent = new Intent(MainActivity.this, RegisterUserActivity.class);
-			startActivity(intent);
-		});
-	}
-    
-	private boolean validateInput() {
-		String email = Objects.requireNonNull(editTextEmail.getText()).toString().trim();
-		String password = Objects.requireNonNull(editTextPassword.getText()).toString().trim();
-    
-		// Validación del correo electrónico
-		if (TextUtils.isEmpty(email)) {
-			textInputLayoutEmail.setError("El email es necesario");
-			return false;
-		} else if (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
-			textInputLayoutEmail.setError("Por favor, ingresa un correo electrónico válido");
-			return false;
-		}
-    
-		// Validación de la contraseña
-		if (TextUtils.isEmpty(password)) {
-			textInputLayoutPwd.setError("La contraseña es necesaria");
-			return false;
-		}
+        boolean isBiometricEnabled = sharedPreferences.getInt("biometric", -1) == 1;
+        boolean userHasBiometrics = dbManager.userWhitBiometrics();
 
-		return !email.isEmpty() && email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
+        if (isBiometricEnabled && BiometricUtils.isBiometricPromptEnabled(MainActivity.this) && userHasBiometrics) {
+            btnBiometric.setVisibility(View.VISIBLE);
+            btnBiometric.setOnClickListener(view -> startBiometricAuthentication());
+        } else {
+            btnBiometric.setVisibility(View.GONE);
+        }
+    }
 
-	}
+    private void setupLoginButton() {
+        Button btnLogin = findViewById(R.id.btnLogin);
+        btnLogin.setOnClickListener(v -> {
+            if (isInputValid()) {
+                try {
+                    performLogin();
+                } catch (HashUtility.HashingException | NoSuchAlgorithmException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
 
-	/**
-	* Inicia sesión en la aplicación, verificando las credenciales del usuario.
-	*
-	* @throws HashUtility.HashingException si se produce un error al realizar el hashing de la contraseña.
-	* @throws NoSuchAlgorithmException si no se encuentra el algoritmo de hashing especificado.
-	*/
-	private void login() throws HashUtility.HashingException, NoSuchAlgorithmException {
-		// Obtiene el correo electrónico ingresado por el usuario.
-		String email = Objects.requireNonNull(editTextEmail.getText()).toString();
-		// Obtiene la contraseña ingresada por el usuario.
-		String password = Objects.requireNonNull(editTextPassword.getText()).toString();
-		// Abre la conexión con la base de datos.
-		dbManager.open();
+    private void setupRegisterLink() {
+        TextView linkRegister = findViewById(R.id.linkRegister);
+        linkRegister.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, RegisterUserActivity.class);
+            startActivity(intent);
+        });
+    }
 
-		// Valida las credenciales del usuario en la base de datos.
-		if (dbManager.validateUser(password, email)) {
-			// Si las credenciales son válidas, se inicia la actividad de contraseñas.
-			Intent intent = new Intent(MainActivity.this, ShowPasswordsActivity.class);
-			startActivity(intent);
+    private boolean isInputValid() {
+        String email = Objects.requireNonNull(editTextEmail.getText()).toString().trim();
+        String password = Objects.requireNonNull(editTextPassword.getText()).toString().trim();
 
-			// Cierra la conexión con la base de datos.
-			dbManager.close();
-		} else {
-			// Si las credenciales son inválidas, muestra un mensaje de error.
-			String TITLE = "Credenciales inválidas";
-			String MSG = "Usuario o contraseña incorrectos";
-			mostrarSweetAlert(this, 3, TITLE, MSG, null);
-			// También podría usar Toast para mostrar un mensaje de error alternativo.
-			//Toast.makeText(this, "Credenciales inválidas, por favor intenta nuevamente", Toast.LENGTH_SHORT).show();
-			// Cierra la conexión con la base de datos.
-			dbManager.close();
-		}
+        if (TextUtils.isEmpty(email)) {
+            textInputLayoutEmail.setError("Email is required.");
+            return false;
+        } else if (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
+            textInputLayoutEmail.setError("Please enter a valid email address.");
+            return false;
+        }
 
-	}
+        if (TextUtils.isEmpty(password)) {
+            textInputLayoutPassword.setError("Password is required.");
+            return false;
+        }
 
-	private void BiometricAuth() {
-		BiometricUtils.showBiometricPrompt(MainActivity.this, new BiometricPrompt.AuthenticationCallback() {
-			@Override
-			public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+        return true;
+    }
 
-				try {
-					if (dbManager.userWhitBiometrics()){
-						Log.i("TAG", "INGRESANDO POR BIOMETRIA");
-						super.onAuthenticationSucceeded(result);
-						// La autenticación biométrica fue exitosa
-						startActivity(new Intent(MainActivity.this, ShowPasswordsActivity.class));
-						Toast.makeText(MainActivity.this, "Autenticado con éxito", Toast.LENGTH_SHORT).show();
-						finish();
-					}
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			}
-		});
-	}
+    /**
+     * Attempts to log in the user by validating their credentials against the database.
+     *
+     * @throws HashUtility.HashingException if an error occurs during password hashing.
+     * @throws NoSuchAlgorithmException if the specified hashing algorithm is not found.
+     */
+    private void performLogin() throws HashUtility.HashingException, NoSuchAlgorithmException {
+        String email = Objects.requireNonNull(editTextEmail.getText()).toString();
+        String password = Objects.requireNonNull(editTextPassword.getText()).toString();
 
+        dbManager.open();
+
+        if (dbManager.validateUser(password, email)) {
+            startActivity(new Intent(MainActivity.this, ShowPasswordsActivity.class));
+            dbManager.close();
+        } else {
+            String title = "Invalid Credentials";
+            String message = "Incorrect username or password.";
+            mostrarSweetAlert(this, 3, title, message, null);
+            dbManager.close();
+        }
+    }
+
+    private void startBiometricAuthentication() {
+        BiometricUtils.showBiometricPrompt(MainActivity.this, new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                super.onAuthenticationSucceeded(result);
+                if (dbManager.userWhitBiometrics()) {
+                    Log.i("TAG", "Biometric authentication successful.");
+                    startActivity(new Intent(MainActivity.this, ShowPasswordsActivity.class));
+                    Toast.makeText(MainActivity.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+
+            @Override
+            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+                super.onAuthenticationError(errorCode, errString);
+                Log.e("TAG", "Biometric authentication error: " + errString);
+            }
+
+            @Override
+            public void onAuthenticationFailed() {
+                super.onAuthenticationFailed();
+                Log.e("TAG", "Biometric authentication failed.");
+            }
+        });
+    }
 }
