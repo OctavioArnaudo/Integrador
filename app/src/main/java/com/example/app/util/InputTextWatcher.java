@@ -5,63 +5,61 @@ import android.text.TextWatcher;
 import com.google.android.material.textfield.TextInputLayout;
 
 /**
- * Esta clase implementa la interfaz TextWatcher y se utiliza para validar los campos de texto
- * en tiempo real. Muestra un mensaje de error si el campo está vacío y borra el mensaje de
- * error si el campo no está vacío.
+ * This class implements the TextWatcher interface to validate text fields in real time.
+ * It shows an error message if the field is empty and clears the error message if the field is not empty.
  */
 public class InputTextWatcher implements TextWatcher {
 
     private final TextInputLayout textInputLayout;
 
     /**
-     * Constructor de la clase InputTextWatcher.
+     * Constructs an InputTextWatcher instance.
      *
-     * @param textInputLayout El TextInputLayout al que se asociará el TextWatcher.
+     * @param textInputLayout The TextInputLayout associated with this TextWatcher.
      */
     public InputTextWatcher(TextInputLayout textInputLayout) {
         this.textInputLayout = textInputLayout;
     }
 
     /**
-     * Se llama cuando el texto en el EditText cambia.
+     * Called when the text in the EditText changes.
      *
-     * @param s      La secuencia de caracteres actual en el EditText.
-     * @param start  El índice de inicio del cambio en el texto.
-     * @param before La longitud del texto que fue reemplazado.
-     * @param count  La longitud del nuevo texto.
+     * @param s      The current character sequence in the EditText.
+     * @param start  The start index of the text that was changed.
+     * @param before The length of the text that was replaced.
+     * @param count  The length of the new text.
      */
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        // Realiza acciones según el texto cambiado
+        // Check if the input is empty and show or clear the error message accordingly
         String input = s.toString().trim();
         if (input.isEmpty()) {
-            textInputLayout.setError("Ingrese una opción válida.");
+            textInputLayout.setError("Please enter a valid option.");
         } else {
-            textInputLayout.setError(null); // Borra el mensaje de error si el campo no está vacío
+            textInputLayout.setError(null); // Clear the error message if the field is not empty
         }
     }
 
     /**
-     * Se llama para notificar que algún texto dentro del EditText está a punto de ser reemplazado.
+     * Called to notify that some text in the EditText is about to be replaced.
      *
-     * @param s      La secuencia de caracteres actual en el EditText.
-     * @param start  El índice de inicio del cambio en el texto.
-     * @param count  La longitud del texto que será reemplazado.
-     * @param after  La longitud del nuevo texto que reemplazará al antiguo.
+     * @param s      The current character sequence in the EditText.
+     * @param start  The start index of the text that will be replaced.
+     * @param count  The length of the text that will be replaced.
+     * @param after  The length of the new text that will replace the old text.
      */
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        // No se utiliza en esta implementación
+        // Not used in this implementation
     }
 
     /**
-     * Se llama para notificar que algún texto dentro del EditText ha sido reemplazado.
+     * Called to notify that some text in the EditText has been replaced.
      *
-     * @param s La secuencia de caracteres actual en el EditText después de los cambios.
+     * @param s The current character sequence in the EditText after the changes.
      */
     @Override
     public void afterTextChanged(Editable s) {
-        // No se utiliza en esta implementación
+        // Not used in this implementation
     }
 }
-
