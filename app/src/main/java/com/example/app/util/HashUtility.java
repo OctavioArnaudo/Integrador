@@ -1,6 +1,5 @@
 package com.example.app.util;
 
-
 import android.annotation.SuppressLint;
 
 import java.security.MessageDigest;
@@ -12,11 +11,11 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class HashUtility {
 
-    private static final String algorithm = "AES";
-    private static final String transformation = "AES/ECB/PKCS5Padding";
+    private static final String ALGORITHM = "AES";
+    private static final String TRANSFORMATION = "AES/ECB/PKCS5Padding";
 
     /**
-     * Excepción personalizada para errores durante el proceso de hashing.
+     * Custom exception for errors during hashing operations.
      */
     public static class HashingException extends Exception {
         public HashingException(String message) {
@@ -25,7 +24,7 @@ public class HashUtility {
     }
 
     /**
-     * Excepción personalizada para errores durante la generación de salt.
+     * Custom exception for errors during salt generation.
      */
     public static class SaltException extends Exception {
         public SaltException(String message) {
@@ -34,10 +33,10 @@ public class HashUtility {
     }
 
     /**
-     * Genera un salt aleatorio de 16 bytes utilizando SecureRandom.
+     * Generates a random salt of 16 bytes using SecureRandom.
      *
-     * @return El salt aleatorio generado.
-     * @throws SaltException Si ocurre un error durante la generación de salt.
+     * @return The generated salt encoded in Base64.
+     * @throws SaltException If an error occurs during salt generation.
      */
     public static String generateSalt() throws SaltException {
         try {
@@ -46,93 +45,85 @@ public class HashUtility {
             random.nextBytes(salt);
             return Base64.getEncoder().encodeToString(salt);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new SaltException("Error al generar el salt.");
+            throw new SaltException("Error generating salt.", e);
         }
     }
 
     /**
-     * Combina la contraseña con el salt y genera un hash utilizando BCrypt.
+     * Hashes the given password with the provided salt using SHA-256.
      *
-     * @param password La contraseña que se desea hashear.
-     * @param salt     El salt que se utilizará para hashear la contraseña.
-     * @return El hash resultante de la combinación de la contraseña y el salt.
-     * @throws HashingException Si ocurre un error durante el proceso de hashing.
+     * @param password The password to hash.
+     * @param salt     The salt to use for hashing.
+     * @return The Base64-encoded hash of the password and salt.
+     * @throws HashingException If an error occurs during hashing.
      */
     public static String hashPassword(String password, String salt) throws HashingException {
         try {
-            // Combina la contraseña con la sal
             String passwordWithSalt = password + salt;
-            // Aplica el algoritmo de hash SHA-256
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hashBytes = digest.digest(passwordWithSalt.getBytes());
-            // Convierte el hash a formato Base64 para almacenarlo
             return Base64.getEncoder().encodeToString(hashBytes);
         } catch (Exception e) {
-           e.printStackTrace();
-           throw new HashingException("Error al hashear la contraseña.");
+            throw new HashingException("Error hashing password.", e);
         }
     }
 
     /**
-     * Verifica si la contraseña coincide con el hash almacenado en la base de datos.
+     * Verifies if the provided password matches the stored hash using the given salt.
      *
-     * @param inputPassword     La contraseña proporcionada por el usuario para la verificación.
-     * @param storedHash        El hash almacenado en la base de datos que se desea comparar.
-     * @param salt              El salt del usuario
-     * @return true si la contraseña coincide con el hash almacenado, false en caso contrario.
+     * @param inputPassword The password to verify.
+     * @param storedHash    The stored hash to compare against.
+     * @param salt          The salt used for hashing.
+     * @return true if the password matches the stored hash, false otherwise.
+     * @throws HashingException If an error occurs during verification.
      */
     public static boolean checkPassword(String inputPassword, String storedHash, String salt) throws HashingException {
-        // Calcula el hash de la contraseña ingresada con la misma sal
-        String inputHash = HashUtility.hashPassword(inputPassword, salt);
-        // Compara el hash calculado con el hash almacenado
+        String inputHash = hashPassword(inputPassword, salt);
         return inputHash.equals(storedHash);
     }
 
     /**
-     * Este método cifra la cadena de datos proporcionada utilizando el algoritmo de cifrado especificado
-     * y la clave proporcionada como sal. El resultado se devuelve como una cadena Base64 codificada.
+     * Encrypts the provided data using AES encryption and the specified salt as the key.
      *
-     * @param data La cadena de datos que se va a cifrar.
-     * @param salt La clave utilizada como sal para el cifrado.
-     * @return Una cadena cifrada codificada en Base64.
-     * @throws Exception Si ocurre un error durante el proceso de cifrado.
+     * @param data The data to encrypt.
+     * @param salt The key used for encryption.
+     * @return The Base64-encoded encrypted data.
+     * @throws Exception If an error occurs during encryption.
      */
     public static String encrypt(String data, String salt) throws Exception {
-        SecretKeySpec keySpec = new SecretKeySpec(salt.getBytes(), algorithm);
-        @SuppressLint("GetInstance") Cipher cipher = Cipher.getInstance(transformation);
+        SecretKeySpec keySpec = new SecretKeySpec(salt.getBytes(), ALGORITHM);
+        Cipher cipher = Cipher.getInstance(TRANSFORMATION);
         cipher.init(Cipher.ENCRYPT_MODE, keySpec);
         byte[] encryptedBytes = cipher.doFinal(data.getBytes());
         return Base64.getEncoder().encodeToString(encryptedBytes);
     }
 
     /**
-     * Este método descifra la cadena cifrada proporcionada utilizando el algoritmo de cifrado especificado
-     * y la clave proporcionada como sal. El resultado se devuelve como una cadena de texto sin cifrar.
+     * Decrypts the provided data using AES decryption and the specified salt as the key.
      *
-     * @param encryptedData La cadena cifrada que se va a descifrar.
-     * @param salt La clave utilizada como sal para el cifrado.
-     * @return Una cadena de texto sin cifrar que representa los datos descifrados.
-     * @throws Exception Si ocurre un error durante el proceso de descifrado.
+     * @param encryptedData The Base64-encoded encrypted data to decrypt.
+     * @param salt          The key used for decryption.
+     * @return The decrypted data as a plain text string.
+     * @throws Exception If an error occurs during decryption.
      */
     public static String decrypt(String encryptedData, String salt) throws Exception {
-        SecretKeySpec keySpec = new SecretKeySpec(salt.getBytes(), algorithm);
-        @SuppressLint("GetInstance") Cipher cipher = Cipher.getInstance(transformation);
+        SecretKeySpec keySpec = new SecretKeySpec(salt.getBytes(), ALGORITHM);
+        Cipher cipher = Cipher.getInstance(TRANSFORMATION);
         cipher.init(Cipher.DECRYPT_MODE, keySpec);
         byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
         return new String(decryptedBytes);
     }
 
     /**
-     * Genera una contraseña aleatoria segura con letras mayúsculas, minúsculas, números y caracteres especiales.
+     * Generates a secure random password containing uppercase, lowercase, digits, and special characters.
      *
-     * @param length La longitud de la contraseña.
-     * @return La contraseña generada.
+     * @param length The length of the generated password.
+     * @return The generated password.
      */
     public static String generateRandomPassword(int length) {
         final String charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=<>?";
         SecureRandom random = new SecureRandom();
-        StringBuilder password = new StringBuilder();
+        StringBuilder password = new StringBuilder(length);
 
         for (int i = 0; i < length; i++) {
             int randomIndex = random.nextInt(charset.length());
