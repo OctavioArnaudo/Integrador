@@ -24,81 +24,81 @@ import java.util.Objects;
 
 public class ViewPassActivity extends AppCompatActivity {
 
-    Button btnYouPass;
-
+    private Button backButton;
+    private ImageView copyPasswordIcon;
+    private TextInputEditText passwordEditText;
+    private TextInputLayout passwordInputLayout;
+    private DbManager dbManager;
+    private int userId;
+    private int passwordId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_pass);
 
-        Intent intent = getIntent(); // Obtiene el Intent que inició esta actividad
-        // Almacena el ID de la contraseña
-        int columnIndexId1 = intent.getIntExtra("idColumna", 0);
+        // Initialize UI elements
+        backButton = findViewById(R.id.botonYouPassViewPass);
+        copyPasswordIcon = findViewById(R.id.imageViewCopy);
+        passwordEditText = findViewById(R.id.editTextPassword);
+        passwordInputLayout = findViewById(R.id.textInputLayout3);
 
-        TextView txtName = findViewById(R.id.editTextName);
-        TextView txtUsername = findViewById(R.id.editTextUsuario);
-        @SuppressLint("CutPasteId") TextView txtKeyword = findViewById(R.id.editTextPassword);
-        TextView txtUrl = findViewById(R.id.editTextUrl);
-        TextView txtDescription = findViewById(R.id.editTextDescripcion);
-        btnYouPass = findViewById(R.id.botonYouPassViewPass);
+        // Initialize DbManager
+        dbManager = new DbManager(this);
 
-
-        //Inicializar el dbManager
-        DbManager dbManager = new DbManager(this);
+        // Retrieve user ID from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("Storage", MODE_PRIVATE);
+        userId = sharedPreferences.getInt("userId", -1);
 
-        int userId = sharedPreferences.getInt("userId", -1);
-        // Obtiene los detalles de la contraseña que se va a mostrar
-        try {
-            PasswordResponse updatedPasswordDetails = dbManager.getPasswordDetails(columnIndexId1, userId);
-            if (updatedPasswordDetails != null) {
-                // Rellena los campos de texto con los detalles de la contraseña a mostrar
-                txtName.setText(updatedPasswordDetails.getName());
-                txtUsername.setText(updatedPasswordDetails.getUsername());
-                txtKeyword.setText(updatedPasswordDetails.getKeyword());
-                txtUrl.setText(updatedPasswordDetails.getUrl());
-                txtDescription.setText(updatedPasswordDetails.getDescription());
-            } else {
-                // Muestra un mensaje de error
-                Toast.makeText(getApplicationContext(), "Error al mostrar los datos de la contraseña", Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            Log.e("TAG", "ERROR: " + e.getMessage());
-        }
+        // Get the password ID from the Intent
+        Intent intent = getIntent();
+        passwordId = intent.getIntExtra("idColumna", 0);
 
+        // Log the retrieved password ID
+        Log.i("ViewPassActivity", "Password ID: " + passwordId);
 
-        // Proporciona una etiqueta ("TAG") donde le paso la actividad y el mensaje
-        Log.i("ViewPassActivity", "Valor de passwordId: " + columnIndexId1);
+        // Load and display password details
+        loadPasswordDetails();
 
-        // Utiliza 0 como valor predeterminado en el caso que no venga ningun valor
-        int columnIndexId = intent.getIntExtra("idColumna", 0);
-        // Proporciona una etiqueta ("TAG") donde le paso la activity y el mensaje
-        Log.i("ViewPassActivity", "Valor de columnIndexId: " + columnIndexId);
+        // Set up the copy password button
+        copyPasswordIcon.setOnClickListener(v -> copyPasswordToClipboard());
 
-        ImageView imageViewCopy = findViewById(R.id.imageViewCopy);
-        @SuppressLint("CutPasteId") TextInputEditText editTextPassword = findViewById(R.id.editTextPassword);
-        TextInputLayout textInputLayout3 = findViewById(R.id.textInputLayout3);
-
-        //copiar la contraseña al portapapeles
-        imageViewCopy.setOnClickListener(v -> {
-            String password = Objects.requireNonNull(textInputLayout3.getEditText()).getText().toString();
-
-            if (!password.isEmpty()) {
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("password", password);
-                clipboard.setPrimaryClip(clip);
-                // Muestra un mensaje de confirmación
-                Toast.makeText(getApplicationContext(), "Contraseña copiada al portapapeles", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        btnYouPass = findViewById(R.id.botonYouPassViewPass);
-        // Regresa a la activity PasswordActivity
-        btnYouPass.setOnClickListener(view -> {
-            Intent intent1 = new Intent(ViewPassActivity.this, ShowPasswordsActivity.class);
-            startActivity(intent1);
+        // Set up the back button to return to the previous activity
+        backButton.setOnClickListener(view -> {
+            Intent backIntent = new Intent(ViewPassActivity.this, ShowPasswordsActivity.class);
+            startActivity(backIntent);
         });
     }
 
+    private void loadPasswordDetails() {
+        try {
+            PasswordResponse passwordDetails = dbManager.getPasswordDetails(passwordId, userId);
+            if (passwordDetails != null) {
+                // Populate the UI with password details
+                ((TextView) findViewById(R.id.editTextName)).setText(passwordDetails.getName());
+                ((TextView) findViewById(R.id.editTextUsuario)).setText(passwordDetails.getUsername());
+                passwordEditText.setText(passwordDetails.getKeyword());
+                ((TextView) findViewById(R.id.editTextUrl)).setText(passwordDetails.getUrl());
+                ((TextView) findViewById(R.id.editTextDescripcion)).setText(passwordDetails.getDescription());
+            } else {
+                // Show error message if details cannot be retrieved
+                Toast.makeText(this, "Error retrieving password details", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Log.e("ViewPassActivity", "Error: " + e.getMessage());
+            Toast.makeText(this, "An error occurred while retrieving password details", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void copyPasswordToClipboard() {
+        String password = Objects.requireNonNull(passwordInputLayout.getEditText()).getText().toString();
+        if (!password.isEmpty()) {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("password", password);
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(this, "Password copied to clipboard", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "No password to copy", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
