@@ -7,18 +7,29 @@ import androidx.fragment.app.FragmentActivity;
 
 public class BiometricUtils {
 
+    /**
+     * Checks if biometric authentication is available and supported on the device.
+     * 
+     * @param context the application context
+     * @return true if biometric authentication is supported, false otherwise
+     */
     public static boolean isBiometricPromptEnabled(Context context) {
-        // Verificar si el dispositivo tiene capacidad de autenticación biométrica
         BiometricManager biometricManager = BiometricManager.from(context);
-        return biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)
-                == BiometricManager.BIOMETRIC_SUCCESS;
+        int authenticationResult = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG);
+        return authenticationResult == BiometricManager.BIOMETRIC_SUCCESS;
     }
 
+    /**
+     * Displays the biometric authentication prompt.
+     * 
+     * @param activity the activity from which the prompt is shown
+     * @param callback the callback to handle authentication results
+     */
     public static void showBiometricPrompt(FragmentActivity activity, BiometricPrompt.AuthenticationCallback callback) {
         BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                .setTitle("Autenticación biométrica")
-                .setSubtitle("Utiliza tu huella para iniciar sesión")
-                .setNegativeButtonText("Cancelar")
+                .setTitle("Biometric Authentication")
+                .setSubtitle("Use your fingerprint to sign in")
+                .setNegativeButtonText("Cancel")
                 .build();
 
         BiometricPrompt biometricPrompt = new BiometricPrompt(activity, activity.getMainExecutor(), callback);
