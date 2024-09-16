@@ -3,26 +3,21 @@
     <style name="Base.Theme.App" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-
-        <item name="cardViewStyle">@style/CardViewNoBorder</item>
-        <item name="android:itemTextAppearance">@style/MyMenuItemTextAppearance</item>
-           <item name="actionOverflowMenuStyle">@style/MyOverflowMenuStyle</item>
-
-    </style>
- <style name="CardViewNoBorder" parent="CardView">
-       <item name="cardCornerRadius">0dp</item>
+		<item name="cardViewStyle">@style/CardViewNoBorder</item>
+		<item name="android:itemTextAppearance">@style/MyMenuItemTextAppearance</item>
+		<item name="actionOverflowMenuStyle">@style/MyOverflowMenuStyle</item>
     </style>
     <style name="Theme.App" parent="Base.Theme.App" />
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+	<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar" />
 
-</style>
+	<style name="CardViewNoBorder" parent="CardView">
+		<item name="cardCornerRadius">0dp</item>
+	</style>
+	<style name="MyMenuItemTextAppearance">
+		<item name="android:textColor">@color/grey_light</item>
+	</style>
+	<style name="MyOverflowMenuStyle">
+		<item name="android:popupBackground">@color/white</item>
+	</style>
 
-<style name="MyMenuItemTextAppearance">
-    <item name="android:textColor">@color/greyLigth</item>
-
-</style>
-
-<style name="MyOverflowMenuStyle">
-    <item name="android:popupBackground">@color/white</item>
-</style>
 </resources>

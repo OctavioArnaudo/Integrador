@@ -1,159 +1,76 @@
-<resources>
-    <string name="app_name">FourTwoOne</string>
-    <string name="log_in">Iniciar Sesión</string>
-    <string name="button">Iniciar Sesión</string>
-    <string name="atras">Volver</string>
-    <string name="register">Registrarse</string>
-    <string name="correo">Correo</string>
-    <string name="password">Contraseña</string>
-    <string name="password2">Repetir Contraseña</string>
-
-    <!--Guardar Contraseña-->
-    <string name="save_password">Nueva Contraseña</string>
-    <string name="nombre">Nombre</string>
-    <string name="usuario">Usuario</string>
-    <string name="fingerprint">Usa tu Huella</string>
-    <string name="url">URL</string>
-    <string name="descripcion">Descripción</string>
-    <string name="boton_guardar">Guardar</string>
-    <string name="login">¿Ya tiene una cuenta?</string>
-    <string name="link_login">Toque aquí para registrarse si ya tiene una cuenta</string>
-
-
-    <!-- Usados exclusivamente en el registro -->
-    <string name="btn_register">Registrarse</string>
-
-    <!--Tus Contraseñas-->
-    <string name="passwords">Tus Contraseñas</string>
-    <string name="txtPasswords">No hay contraseñas  que mostrar, ¡por favor añada una!</string>
-    <string name="btn_add">+</string>
-
-    <!--Editar Contraseña-->
-    <string name="edit_password">Editar Contraseña </string>
-    <string name="password_e">Contraseña</string>
-    <string name="url_e">URL</string>
-    <string name="description_e">Descripción</string>
-
-    <!--Ver Contraseña-->
-    <string name="ver_password">Ver Contraseña</string>
-    <string name="nombre_sitio">Sitio Web</string>
-    <string name="usuario_nombre">Usuario</string>
-    <string name="password_sitio">Contraseña</string>
-    <string name="url_sitio">URL</string>
-    <string name="descripcion_pass">Descripción</string>
-    <!--<string name="last_date"> 28/09/2023</string>-->
-  
-    <!--Menu Popup-->
-    <string name="op1">About</string>
-    <string name="op2">Cerrar Sesión</string>
-
-    <!--Splash-->
-    <string name="autenticacion">Autenticación</string>
-    <string name="off">OFF</string>
-    <string name="on">ON</string>
-    <string name="search">Buscar</string>
-    <string name="add">+ Agregar</string>
-    <string name="todo">Scroll</string>
-
-	<string name="app_logo_description">Logotipo de la aplicación</string>
-	<string name="back_to_previous_screen">Regresar a la pantalla anterior</string>
-	<string name="register_link_text">Toque aquí para crear una cuenta  si no tiene una</string>
-	<string name="register_link_description">¿No estas registrado?</string>
-	<string name="log_in_description">Toque aqui para iniciar sesión</string>
-	<string name="add_new_password">Toque aqui para agregar una nueva contraseña</string>
-	
-<string name="author_name">Octavio Arnaudo</string>
-    <string name="author_name_description">Author's name</string>
-    <string name="development_info">A development by ISPC</string>
-    <string name="development_info_description">Information about the development</string>
-    <string name="app_name">YourAppName</string>
-    <string name="app_name_description">Name of the application</string>
-    <string name="version_text">Version 1.0</string>
-    <string name="version_description">Current version of the application</string>
-    <string name="app_logo_description">App logo description</string>
-    <string name="video_view_description">Video content placeholder</string>
-    <string name="web_view_description">Web content placeholder</string>
-    <string name="button_text_back">Back</string>
-    <string name="back_button_description">Button to go back</string>
-
-    <!-- General -->
-    <string name="app_name">MyApp</string>
-
-    <!-- Button Texts -->
-    <string name="save_button_text">Save</string>
-    <string name="back_to_previous_screen">Back to Previous Screen</string>
-
-    <!-- Input Hints -->
-    <string name="name_hint">Name</string>
-    <string name="username_hint">Username</string>
-    <string name="password_hint">Password</string>
-    <string name="url_hint">URL</string>
-    <string name="description_hint">Description</string>
-
-    <!-- Icon Descriptions -->
-    <string name="name_icon_description">Name icon</string>
-    <string name="email_icon_description">Email icon</string>
-    <string name="password_toggle_description">Click to show or hide password</string>
-    <string name="password_generate_description">Click to generate a secure password</string>
-    <string name="url_icon_description">URL icon</string>
-    <string name="description_icon_description">Description icon</string>
-
-    <!-- Titles -->
-    <string name="save_password">Save Password</string>
-
-    <string name="back_to_previous_screen">Back to previous screen</string>
-    <string name="edit_password">Edit Password</string>
-    <string name="field_name">Name</string>
-    <string name="field_username">Username</string>
-    <string name="field_password">Password</string>
-    <string name="field_url">URL</string>
-    <string name="field_description">Description</string>
-    <string name="button_save">Save</string>
-    <string name="icon_description_name">Name icon</string>
-    <string name="icon_description_email">Email icon</string>
-    <string name="icon_description_password">Password icon</string>
-    <string name="icon_description_url">URL icon</string>
-    <string name="icon_description_description">Description icon</string>
-
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- App Name -->
-    <string name="app_name">My App</string>
-
-    <!-- Log In -->
-    <string name="log_in">Log In</string>
-    <string name="log_in_description">Log In Button</string>
-
-    <!-- Email -->
-    <string name="email_hint">Email Address</string>
-    <string name="email_icon_description">Email Icon</string>
-
-    <!-- Password -->
-    <string name="password_hint">Password</string>
-    <string name="password_icon_description">Password Icon</string>
-
-    <!-- Register Link -->
-    <string name="register_link_description">Register Link</string>
-    <string name="register_link_text">Register Here</string>
-	
-<resources>
-    <!-- General Strings -->
-    <string name="app_name">YourAppName</string>
-    <string name="fingerprint">Fingerprint</string>
-    <string name="off">Off</string>
-    <string name="on">On</string>
-    <string name="button_save">Save Button</string>
-    <string name="register">Register</string>
-    <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="password_confirm">Confirm Password</string>
-    <string name="link_login">Go to Login</string>
-    <string name="icon_email">Email Icon</string>
-    <string name="icon_lock">Lock Icon</string>
-</resources>
-
-	
-</resources>
-
-	
+	<string name="about">About</string>
+	<string name="add">Add</string>
+	<string name="app_name">FourTwoOne</string>
+	<string name="app_version">Version 1.0</string>
+	<string name="author_name">Octavio Arnaudo</string>
+	<string name="back">Back</string>
+	<string name="copy">Copy to Clipboard</string>
+	<string name="description_add">Add a New Password</string>
+	<string name="description_app_logo">The logo representing the application</string>
+	<string name="description_app_name">The official name of the application.</string>
+	<string name="description_app_version">Displays the current version of the application.</string>
+	<string name="description_author_name">The name of the author of the application.</string>
+	<string name="description_back">Button to navigate back to the previous screen.</string>
+	<string name="description_development_team">Details about the development team and the development process.</string>
+	<string name="description_login">Click here to access your account</string>
+	<string name="description_menu">Access the submenu options</string>
+	<string name="description_password_delete">Remove the selected password from the list.</string>
+	<string name="description_password">Description of the password field.</string>
+	<string name="description_password_edit">Modify the details of the existing password.</string>
+	<string name="description_password_generate">Click to create a secure password automatically.</string>
+	<string name="description_password_no">No passwords are available. Please add one!</string>
+	<string name="description_password_toggle">Click to toggle visibility of the password.</string>
+	<string name="description_password_view">View detailed information about the saved password.</string>
+	<string name="description_save">Navigate to the home screen of the application.</string>
+	<string name="description_scroll">Scroll through the content.</string>
+	<string name="description_search">Enter keywords to search.</string>
+	<string name="description_signup">Click here to create a new account if you do not have one</string>
+	<string name="development_team">Developed by ISPC</string>
+	<string name="email">Email</string>
+	<string name="fingerprint">Fingerprint Authentication</string>
+	<string name="hint_author_name">Enter your full name.</string>
+	<string name="hint_back">Return to the Previous Screen</string>
+	<string name="hint_email">Enter an email address</string>
+	<string name="hint_password_confirm">Re-enter your password</string>
+	<string name="hint_password">Enter a password</string>
+	<string name="hint_password_name">Name of the password</string>
+	<string name="hint_password_new">Enter a new password</string>
+	<string name="hint_password_note">Provide a brief description</string>
+	<string name="hint_search">Enter keywords to search.</string>
+	<string name="hint_signup">Not registered yet?</string>
+	<string name="hint_url">Provide the website URL</string>
+	<string name="hint_username">Enter your username.</string>
+	<string name="icon_app_name">App Name Icon</string>
+	<string name="icon_copy">Clipboard Copy Icon</string>
+	<string name="icon_email">Email Icon</string>
+	<string name="icon_password_generate">Password Generate Icon</string>
+	<string name="icon_password_name">Password Name Icon</string>
+	<string name="icon_password_note">Password Note Icon</string>
+	<string name="icon_password">Password Icon</string>
+	<string name="icon_password_toggle">Password Toggle Icon</string>
+	<string name="icon_url">URL Icon</string>
+	<string name="login">Log In</string>
+	<string name="logout">Log Out</string>
+	<string name="name">Name</string>
+	<string name="note">Description</string>
+	<string name="off">Off</string>
+	<string name="on">On</string>
+	<string name="password_edit">Edit Password</string>
+	<string name="password_generate">Generate a Random Password</string>
+	<string name="password_name">Password Name</string>
+	<string name="password_no">No passwords are available. Please add one!</string>
+	<string name="password">Password</string>
+	<string name="save">Save</string>
+	<string name="search">Search</string>
+	<string name="signup">Signup User</string>
+	<string name="toggle_password_visibility">Toggle password visibility.</string>
+	<string name="url">URL</string>
+	<string name="username">Username</string>
+	<string name="view_password">View Password</string>
+    <string name="hint_save">Save Password</string>
+	<string name="hint_password_view">View Password</string>
+	<string name="hint_login">Login User</string>
+	<string name="hint_password_edit">Edit Password</string>
 </resources>

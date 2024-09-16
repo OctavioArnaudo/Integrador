@@ -1,16 +1,16 @@
-#Tue May 14 18:18:15 ART 2024
-base.0=E\:\\AndroidStudioProjects\\Integrador\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
-base.1=E\:\\AndroidStudioProjects\\Integrador\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
-base.2=E\:\\AndroidStudioProjects\\Integrador\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\4\\classes.dex
-base.3=E\:\\AndroidStudioProjects\\Integrador\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\5\\classes.dex
-base.4=E\:\\AndroidStudioProjects\\Integrador\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\7\\classes.dex
-base.5=E\:\\AndroidStudioProjects\\Integrador\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\9\\classes.dex
+#Mon Sep 16 12:49:46 ART 2024
+base.0=F\:\\AndroidStudioProjects\\Integrador\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
+base.1=F\:\\AndroidStudioProjects\\Integrador\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
+base.2=F\:\\AndroidStudioProjects\\Integrador\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\11\\classes.dex
+base.3=F\:\\AndroidStudioProjects\\Integrador\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\5\\classes.dex
+base.4=F\:\\AndroidStudioProjects\\Integrador\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\6\\classes.dex
+base.5=F\:\\AndroidStudioProjects\\Integrador\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\8\\classes.dex
 path.0=classes.dex
 path.1=0/classes.dex
-path.2=4/classes.dex
+path.2=11/classes.dex
 path.3=5/classes.dex
-path.4=7/classes.dex
-path.5=9/classes.dex
+path.4=6/classes.dex
+path.5=8/classes.dex
 renamed.0=classes.dex
 renamed.1=classes2.dex
 renamed.2=classes3.dex

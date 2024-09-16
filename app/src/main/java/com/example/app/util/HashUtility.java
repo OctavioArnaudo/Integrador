@@ -1,7 +1,5 @@
 package com.example.app.util;
 
-import android.annotation.SuppressLint;
-
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -45,7 +43,7 @@ public class HashUtility {
             random.nextBytes(salt);
             return Base64.getEncoder().encodeToString(salt);
         } catch (Exception e) {
-            throw new SaltException("Error generating salt.", e);
+            throw new SaltException("Error generating salt.");
         }
     }
 
@@ -64,7 +62,7 @@ public class HashUtility {
             byte[] hashBytes = digest.digest(passwordWithSalt.getBytes());
             return Base64.getEncoder().encodeToString(hashBytes);
         } catch (Exception e) {
-            throw new HashingException("Error hashing password.", e);
+            throw new HashingException("Error hashing password.");
         }
     }
 
@@ -132,4 +130,5 @@ public class HashUtility {
 
         return password.toString();
     }
+    
 }
