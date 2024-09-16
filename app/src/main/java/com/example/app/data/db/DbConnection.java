@@ -10,6 +10,7 @@ import android.util.Log;
  * Manages the connection to and creation of the SQLite database for the application.
  */
 public class DbConnection extends SQLiteOpenHelper {
+    private static final String TAG = "DbConnection";
     // Database name and version
     private static final String DB_NAME = "app.db";
     private static final int DB_VERSION = 1;
@@ -31,14 +32,14 @@ public class DbConnection extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         try {
-            Log.d("DbConnection", "onCreate called");
-            Log.d("DbConnection", "Creating PASSWORD table...");
+            Log.d(TAG, "onCreate called");
+            Log.d(TAG, "Creating PASSWORD table...");
             db.execSQL(DbManager.CREATE_PASSWORD_TABLE);
-            Log.d("DbConnection", "Creating USER table...");
+            Log.d(TAG, "Creating USER table...");
             db.execSQL(DbManager.CREATE_USER_TABLE);
-            Log.d("DbConnection", "Tables created successfully.");
+            Log.d(TAG, "Tables created successfully.");
         } catch (SQLException e) {
-            Log.e("DbConnection", "Error creating tables: " + e.getMessage());
+            Log.e(TAG, "Error creating tables: " + e.getMessage());
         }
     }
 
@@ -52,8 +53,8 @@ public class DbConnection extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older tables if they exist
-        db.execSQL("DROP TABLE IF EXISTS " + DbManager.TB_PASSWORD);
-        db.execSQL("DROP TABLE IF EXISTS " + DbManager.TB_USER);
+        db.execSQL("DROP TABLE IF EXISTS " + DbManager.TB_PASSWORDS);
+        db.execSQL("DROP TABLE IF EXISTS " + DbManager.TB_USERS);
         // Create new tables
         onCreate(db);
     }

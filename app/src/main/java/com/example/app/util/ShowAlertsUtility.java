@@ -51,14 +51,13 @@ public class ShowAlertsUtility {
      * @param message         The message to be displayed in the dialog.
      * @param confirmListener Listener for the confirm button click.
      * @param cancelListener  Listener for the cancel button click.
-     * @return The SweetAlertDialog instance.
      */
-    public static SweetAlertDialog showAlertWithOptions(Context context, int type, String title, String message,
-                                                        SweetAlertDialog.OnSweetClickListener confirmListener,
-                                                        SweetAlertDialog.OnSweetClickListener cancelListener) {
+    public static void showAlertWithOptions(Context context, int type, String title, String message,
+                                            SweetAlertDialog.OnSweetClickListener confirmListener,
+                                            SweetAlertDialog.OnSweetClickListener cancelListener) {
         if (context == null) {
             Log.e(TAG, "Context is null in showAlertWithOptions");
-            return null;
+            return;
         }
 
         SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, type);
@@ -82,6 +81,5 @@ public class ShowAlertsUtility {
         });
 
         sweetAlertDialog.show();
-        return sweetAlertDialog;
     }
 }

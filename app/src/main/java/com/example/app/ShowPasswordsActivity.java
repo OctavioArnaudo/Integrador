@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.app.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -34,15 +35,13 @@ import java.util.Objects;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class ShowPasswordsActivity extends AppCompatActivity {
-
-    private FloatingActionButton addButton;
+	private static final String TAG = "ShowPasswordsActivity";
     private ImageView menuIcon;
     private ImageButton eyeIcon;
     private ImageButton editIcon;
     private ImageButton deleteIcon;
     private DbManager dbManager;
     private ScrollView scrollView;
-    private TextInputEditText searchEditText;
     private List<PasswordResponse> passwords;
     private int userId;
 
@@ -53,12 +52,11 @@ public class ShowPasswordsActivity extends AppCompatActivity {
 
         // Initialize DbManager and UI elements
         dbManager = new DbManager(this);
-        TableLayout passwordTable = findViewById(R.id.tableLayout);
-        TextInputLayout searchInputLayout = findViewById(R.id.textInputLayoutName);
-        searchEditText = findViewById(R.id.editTextSearch);
+        TextInputLayout textInputLayoutName = findViewById(R.id.layout_password_name);
+        TextInputEditText editTextName = findViewById(R.id.input_password_name);
 
         // Set up the TextWatcher to filter passwords
-        searchEditText.addTextChangedListener(new InputTextWatcher(searchInputLayout) {
+        editTextName.addTextChangedListener(new InputTextWatcher(textInputLayoutName) {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String searchText = s.toString().trim();
@@ -71,33 +69,33 @@ public class ShowPasswordsActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("Storage", MODE_PRIVATE);
         if (sharedPreferences.contains("userId")) {
             userId = sharedPreferences.getInt("userId", -1);
-            Log.i("TAG", "Displaying passwords for user ID: " + userId);
+            Log.i(TAG, "Displaying passwords for user ID: " + userId);
             passwords = dbManager.getPasswordsListForUserId(userId);
-            Log.i("TAG", "Password list size: " + passwords.size());
+            Log.i(TAG, "Password list size: " + passwords.size());
             displayPasswords(passwords);
         } else {
-            Log.e("ShowPasswordsActivity", "User ID not found in SharedPreferences");
+            Log.e(TAG, "User ID not found in SharedPreferences");
         }
 
         // Set up the add button
-        addButton = findViewById(R.id.btn_add);
+        FloatingActionButton addButton = findViewById(R.id.btn_add);
         addButton.setOnClickListener(view -> {
-            Intent intent = new Intent(ShowPasswordsActivity.this, RegisterPasswordActivity.class);
+            Intent intent = new Intent(ShowPasswordsActivity.this, RegisterPasswordsActivity.class);
             startActivity(intent);
         });
 
         // Set up the menu icon
-        menuIcon = findViewById(R.id.menu_view);
+        menuIcon = findViewById(R.id.img_menu);
         menuIcon.setOnClickListener(view -> {
             PopupMenu popupMenu = new PopupMenu(ShowPasswordsActivity.this, menuIcon);
             popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
             popupMenu.setOnMenuItemClickListener(item -> {
                 int itemId = item.getItemId();
-                if (itemId == R.id.option_1) {
+                if (itemId == R.id.about) {
                     Intent aboutIntent = new Intent(ShowPasswordsActivity.this, AboutActivity.class);
                     startActivity(aboutIntent);
                     return true;
-                } else if (itemId == R.id.option_2) {
+                } else if (itemId == R.id.logout) {
                     Intent mainIntent = new Intent(ShowPasswordsActivity.this, MainActivity.class);
                     startActivity(mainIntent);
                     return true;
@@ -109,8 +107,8 @@ public class ShowPasswordsActivity extends AppCompatActivity {
         });
 
         // Set up scroll view indicator
-        scrollView = findViewById(R.id.scrollView);
-        ImageView scrollIndicator = findViewById(R.id.scrollIndicator);
+        scrollView = findViewById(R.id.scroll_view);
+        ImageView scrollIndicator = findViewById(R.id.img_scroll_indicator);
         scrollView.post(() -> {
             if (scrollView.getChildAt(0).getHeight() > scrollView.getHeight()) {
                 scrollIndicator.setVisibility(View.VISIBLE);
@@ -128,9 +126,9 @@ public class ShowPasswordsActivity extends AppCompatActivity {
 
     private void displayPasswords(List<PasswordResponse> passwords) {
         try {
-            TableLayout passwordTable = findViewById(R.id.tableLayout);
-            TextView noPasswordsText = findViewById(R.id.txtNoPassword);
-            ImageView noPasswordsImage = findViewById(R.id.imageView);
+            TableLayout passwordTable = findViewById(R.id.table_layout);
+            TextView noPasswordsText = findViewById(R.id.text_password_no);
+            ImageView noPasswordsImage = findViewById(R.id.img_password_no);
             passwordTable.removeAllViews();
 
             if (passwords.isEmpty()) {
@@ -144,16 +142,16 @@ public class ShowPasswordsActivity extends AppCompatActivity {
 
                 LayoutInflater inflater = LayoutInflater.from(this);
                 for (PasswordResponse password : passwords) {
-                    TableRow row = (TableRow) inflater.inflate(R.layout.row_password, null);
+                    TableRow row = (TableRow) inflater.inflate(R.layout.row_table,null);
 
-                    eyeIcon = row.findViewById(R.id.icon_eye);
-                    editIcon = row.findViewById(R.id.icon_pen);
-                    deleteIcon = row.findViewById(R.id.icon_trash);
+                    eyeIcon = row.findViewById(R.id.btn_password_view);
+                    editIcon = row.findViewById(R.id.btn_password_edit);
+                    deleteIcon = row.findViewById(R.id.btn_password_delete);
 
-                    TextView nameTextView = row.findViewById(R.id.textView);
+                    TextView nameTextView = row.findViewById(R.id.text_password_name);
                     String name = password.getName();
                     if (name.length() > 10) {
-                        nameTextView.setText(name.substring(0, 10) + "...");
+                        nameTextView.setText(name.substring(0, 10));
                     } else {
                         nameTextView.setText(name);
                     }
@@ -163,11 +161,9 @@ public class ShowPasswordsActivity extends AppCompatActivity {
                 }
             }
         } catch (SQLException e) {
-            Log.e("ShowPasswordsActivity", "Database error: " + e.getMessage());
-            ShowAlertsUtility.showErrorAlert(this, "Database Error", "An error occurred while fetching passwords.");
+            throw new RuntimeException(e);
         } catch (Exception e) {
-            Log.e("ShowPasswordsActivity", "Unexpected error: " + e.getMessage());
-            ShowAlertsUtility.showErrorAlert(this, "Error", "An unexpected error occurred.");
+            Log.e(TAG, "Unexpected error: " + e.getMessage());
         }
     }
 
@@ -181,14 +177,14 @@ public class ShowPasswordsActivity extends AppCompatActivity {
         deleteIcon.setTag(passwordId);
 
         eyeIcon.setOnClickListener(v -> {
-            Intent viewIntent = new Intent(ShowPasswordsActivity.this, ViewPassActivity.class);
+            Intent viewIntent = new Intent(ShowPasswordsActivity.this, ViewPasswordsActivity.class);
             viewIntent.putExtra("passwordId", passwordId);
             viewIntent.putExtra("userId", userId);
             startActivity(viewIntent);
         });
 
         editIcon.setOnClickListener(v -> {
-            Intent editIntent = new Intent(ShowPasswordsActivity.this, EditPasswordActivity.class);
+            Intent editIntent = new Intent(ShowPasswordsActivity.this, EditPasswordsActivity.class);
             editIntent.putExtra("passwordId", passwordId);
             editIntent.putExtra("userId", userId);
             startActivity(editIntent);
@@ -196,7 +192,7 @@ public class ShowPasswordsActivity extends AppCompatActivity {
 
         deleteIcon.setOnClickListener(v -> {
             int idToDelete = (int) v.getTag();
-            ShowAlertsUtility.showDeleteConfirmationAlert(this,
+            ShowAlertsUtility.showAlertWithOptions(this, 3,
                     "Are you sure you want to delete this password?",
                     "This action cannot be undone.",
                     sweetAlertDialog -> {
@@ -204,13 +200,13 @@ public class ShowPasswordsActivity extends AppCompatActivity {
                             dbManager.deletePassword(idToDelete);
                             passwords = dbManager.getPasswordsListForUserId(userId);
                             displayPasswords(passwords);
-                            ShowAlertsUtility.showSuccessAlert(this, "Success", "Password deleted successfully.");
+                            ShowAlertsUtility.showAlert(this, 2, "Success", "Password deleted successfully.", SweetAlertDialog::dismissWithAnimation);
                         } catch (Exception e) {
-                            Log.e("ShowPasswordsActivity", "Error deleting password: " + e.getMessage());
-                            ShowAlertsUtility.showErrorAlert(this, "Error", "An error occurred while deleting the password.");
+                            Log.e(TAG, "Error deleting password: " + e.getMessage());
+                            ShowAlertsUtility.showAlert(this, 1, "Error", "An error occurred while deleting the password.", SweetAlertDialog::dismissWithAnimation);
                         }
                     },
-                    sweetAlertDialog -> ShowAlertsUtility.showInfoAlert(this, "Cancelled", "Operation cancelled."));
+                    sweetAlertDialog -> ShowAlertsUtility.showAlert(this, 1, "Cancelled", "Operation cancelled.", SweetAlertDialog::dismissWithAnimation));
         });
     }
 

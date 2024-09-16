@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:layout_editor_absoluteY="25dp">
+
+    <View
+        android:id="@+id/view_background"
+        android:layout_width="wrap_content"
+        android:layout_height="365dp"
+        android:background="@color/red"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0" />
+
+    <TextView
+        android:id="@+id/text_app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:autoSizeTextType="uniform"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="48sp"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_view_main"
+        android:layout_width="319dp"
+        android:layout_height="550dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/white"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.498">
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_fingerprint"
+            android:layout_width="283dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="390dp"
+            android:layout_marginEnd="16dp"
+            android:button="@drawable/fingerprint_solid"
+            android:buttonTint="@color/red"
+            android:checked="true"
+            android:showText="false"
+            android:text="@string/fingerprint"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textColor="@color/red"
+            android:textIsSelectable="false"
+            android:textOff="@string/off"
+            android:textOn="@string/on"
+            android:textStyle="bold|italic"
+            android:thumbTint="@color/red"
+            android:visibility="visible"
+            tools:visibility="visible" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_view_header"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginBottom="60dp"
+            android:backgroundTint="@color/white"
+            app:cardCornerRadius="30dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_save"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="60dp"
+                    android:layout_height="70dp"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="@color/red"
+                    android:contentDescription="@string/save"
+                    android:elevation="12dp"
+                    app:cornerRadius="30dp"
+                    app:icon="@drawable/arrow"
+                    app:iconGravity="start"
+                    app:iconSize="30dp"
+                    app:iconTint="@color/white"
+                    tools:ignore="MissingConstraints" />
+
+                <TextView
+                    android:id="@+id/text_signup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:text="@string/signup"
+                    android:textColor="@color/red"
+                    android:textSize="30sp"
+                    android:textStyle="italic" />
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="292dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="80dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="vertical">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_email"
+                android:layout_width="285dp"
+                android:layout_height="87dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:hint="@string/hint_email"
+                android:textColor="@color/grey_light"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusBottomStart="25dp"
+                app:boxCornerRadiusTopEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:boxStrokeColor="@color/grey_light"
+                app:hintTextColor="@color/grey_light"
+                app:startIconContentDescription="@string/icon_email"
+                app:startIconDrawable="@drawable/email"
+                app:startIconTint="@color/red">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:inputType="text"
+                    android:textColor="@color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_password_new"
+                android:layout_width="285dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:hint="@string/hint_password_new"
+                android:textColor="@color/grey_light"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusBottomStart="25dp"
+                app:boxCornerRadiusTopEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:boxStrokeColor="@color/grey_light"
+                app:counterEnabled="false"
+                app:counterMaxLength="20"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/grey"
+                app:errorEnabled="true"
+                app:hintTextColor="@color/grey_light"
+                app:startIconContentDescription="@string/icon_password"
+                app:startIconDrawable="@drawable/lock_solid"
+                app:startIconTint="@color/red">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_password_new"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:inputType="text"
+                    android:textColor="@color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_password_confirm"
+                android:layout_width="285dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:baselineAligned="false"
+                android:gravity="center"
+                android:hint="@string/hint_password_confirm"
+                android:textColor="@color/grey_light"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusBottomStart="25dp"
+                app:boxCornerRadiusTopEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:boxStrokeColor="@color/grey_light"
+                app:counterEnabled="false"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/grey"
+                app:errorEnabled="true"
+                app:hintTextColor="@color/grey_light"
+                app:startIconContentDescription="@string/icon_password"
+                app:startIconDrawable="@drawable/lock_solid"
+                app:startIconTint="@color/red">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_password_confirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/black" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="110dp"
+            android:layout_marginTop="470dp"
+            android:contentDescription="@string/description_login"
+            android:text="@string/hint_login"
+            android:textColor="@color/red"
+            android:textSize="16sp" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_signup"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="230dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="435dp"
+        android:backgroundTint="@color/red"
+        android:text="@string/signup"
+        android:textColor="@color/white"
+        app:cardElevation="15dp"
+        app:cornerRadius="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/card_view_main"
+        app:layout_constraintVertical_bias="0.487" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

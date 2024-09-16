@@ -1,5 +1,7 @@
 package com.example.app;
 
+import static com.example.app.util.InputValidator.getTrimmedText;
+
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.app.R;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.example.app.data.db.DbManager;
@@ -22,12 +25,10 @@ import com.example.app.data.model.response.PasswordResponse;
 
 import java.util.Objects;
 
-public class ViewPassActivity extends AppCompatActivity {
-
-    private Button backButton;
-    private ImageView copyPasswordIcon;
-    private TextInputEditText passwordEditText;
-    private TextInputLayout passwordInputLayout;
+public class ViewPasswordsActivity extends AppCompatActivity {
+	private static final String TAG = "ViewPasswordsActivity";
+    private TextInputEditText editTextPassword;
+    private TextInputLayout textInputLayoutPassword;
     private DbManager dbManager;
     private int userId;
     private int passwordId;
@@ -35,13 +36,13 @@ public class ViewPassActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_pass);
+        setContentView(R.layout.activity_view_passwords);
 
         // Initialize UI elements
-        backButton = findViewById(R.id.botonYouPassViewPass);
-        copyPasswordIcon = findViewById(R.id.imageViewCopy);
-        passwordEditText = findViewById(R.id.editTextPassword);
-        passwordInputLayout = findViewById(R.id.textInputLayout3);
+        Button backButton = findViewById(R.id.btn_back);
+        ImageView copyIcon = findViewById(R.id.view_copy);
+        editTextPassword = findViewById(R.id.input_password);
+        textInputLayoutPassword = findViewById(R.id.layout_password);
 
         // Initialize DbManager
         dbManager = new DbManager(this);
@@ -52,20 +53,20 @@ public class ViewPassActivity extends AppCompatActivity {
 
         // Get the password ID from the Intent
         Intent intent = getIntent();
-        passwordId = intent.getIntExtra("idColumna", 0);
+        passwordId = intent.getIntExtra("passwordId", 0);
 
         // Log the retrieved password ID
-        Log.i("ViewPassActivity", "Password ID: " + passwordId);
+        Log.i(TAG, "Password ID: " + passwordId);
 
         // Load and display password details
         loadPasswordDetails();
 
         // Set up the copy password button
-        copyPasswordIcon.setOnClickListener(v -> copyPasswordToClipboard());
+        copyIcon.setOnClickListener(v -> copyPasswordToClipboard());
 
         // Set up the back button to return to the previous activity
         backButton.setOnClickListener(view -> {
-            Intent backIntent = new Intent(ViewPassActivity.this, ShowPasswordsActivity.class);
+            Intent backIntent = new Intent(ViewPasswordsActivity.this, ShowPasswordsActivity.class);
             startActivity(backIntent);
         });
     }
@@ -75,23 +76,23 @@ public class ViewPassActivity extends AppCompatActivity {
             PasswordResponse passwordDetails = dbManager.getPasswordDetails(passwordId, userId);
             if (passwordDetails != null) {
                 // Populate the UI with password details
-                ((TextView) findViewById(R.id.editTextName)).setText(passwordDetails.getName());
-                ((TextView) findViewById(R.id.editTextUsuario)).setText(passwordDetails.getUsername());
-                passwordEditText.setText(passwordDetails.getKeyword());
-                ((TextView) findViewById(R.id.editTextUrl)).setText(passwordDetails.getUrl());
-                ((TextView) findViewById(R.id.editTextDescripcion)).setText(passwordDetails.getDescription());
+                ((TextView) findViewById(R.id.text_password_name)).setText(passwordDetails.getName());
+                ((TextView) findViewById(R.id.input_email)).setText(passwordDetails.getUsername());
+                editTextPassword.setText(passwordDetails.getKeyword());
+                ((TextView) findViewById(R.id.input_url)).setText(passwordDetails.getUrl());
+                ((TextView) findViewById(R.id.input_password_note)).setText(passwordDetails.getDescription());
             } else {
                 // Show error message if details cannot be retrieved
                 Toast.makeText(this, "Error retrieving password details", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
-            Log.e("ViewPassActivity", "Error: " + e.getMessage());
+            Log.e(TAG, "Error: " + e.getMessage());
             Toast.makeText(this, "An error occurred while retrieving password details", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void copyPasswordToClipboard() {
-        String password = Objects.requireNonNull(passwordInputLayout.getEditText()).getText().toString();
+        String password = getTrimmedText(textInputLayoutPassword.getEditText());
         if (!password.isEmpty()) {
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("password", password);

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="grey">#808080</color>
+    <color name="grey_light">#D3D3D3</color>
+    <color name="ic_app_launcher_background">#FFFFFF</color>
+    <color name="red">#FF0000</color>
+    <color name="text_accessibility">#4A4A4A</color>
+    <color name="white">#FFFFFF</color>
+    <string name="about">About</string>
+    <string name="add">Add</string>
+    <string name="app_name">FourTwoOne</string>
+    <string name="app_version">Version 1.0</string>
+    <string name="author_name">Octavio Arnaudo</string>
+    <string name="back">Back</string>
+    <string name="copy">Copy to Clipboard</string>
+    <string name="description_add">Add a New Password</string>
+    <string name="description_app_logo">The logo representing the application</string>
+    <string name="description_app_name">The official name of the application.</string>
+    <string name="description_app_version">Displays the current version of the application.</string>
+    <string name="description_author_name">The name of the author of the application.</string>
+    <string name="description_back">Button to navigate back to the previous screen.</string>
+    <string name="description_development_team">Details about the development team and the development process.</string>
+    <string name="description_login">Click here to access your account</string>
+    <string name="description_menu">Access the submenu options</string>
+    <string name="description_password">Description of the password field.</string>
+    <string name="description_password_delete">Remove the selected password from the list.</string>
+    <string name="description_password_edit">Modify the details of the existing password.</string>
+    <string name="description_password_generate">Click to create a secure password automatically.</string>
+    <string name="description_password_no">No passwords are available. Please add one!</string>
+    <string name="description_password_toggle">Click to toggle visibility of the password.</string>
+    <string name="description_password_view">View detailed information about the saved password.</string>
+    <string name="description_save">Navigate to the home screen of the application.</string>
+    <string name="description_scroll">Scroll through the content.</string>
+    <string name="description_search">Enter keywords to search.</string>
+    <string name="description_signup">Click here to create a new account if you do not have one</string>
+    <string name="development_team">Developed by ISPC</string>
+    <string name="email">Email</string>
+    <string name="fingerprint">Fingerprint Authentication</string>
+    <string name="hint_author_name">Enter your full name.</string>
+    <string name="hint_back">Return to the Previous Screen</string>
+    <string name="hint_email">Enter an email address</string>
+    <string name="hint_login">Login User</string>
+    <string name="hint_password">Enter a password</string>
+    <string name="hint_password_confirm">Re-enter your password</string>
+    <string name="hint_password_edit">Edit Password</string>
+    <string name="hint_password_name">Name of the password</string>
+    <string name="hint_password_new">Enter a new password</string>
+    <string name="hint_password_note">Provide a brief description</string>
+    <string name="hint_password_view">View Password</string>
+    <string name="hint_save">Save Password</string>
+    <string name="hint_search">Enter keywords to search.</string>
+    <string name="hint_signup">Not registered yet?</string>
+    <string name="hint_url">Provide the website URL</string>
+    <string name="hint_username">Enter your username.</string>
+    <string name="icon_app_name">App Name Icon</string>
+    <string name="icon_copy">Clipboard Copy Icon</string>
+    <string name="icon_email">Email Icon</string>
+    <string name="icon_password">Password Icon</string>
+    <string name="icon_password_generate">Password Generate Icon</string>
+    <string name="icon_password_name">Password Name Icon</string>
+    <string name="icon_password_note">Password Note Icon</string>
+    <string name="icon_password_toggle">Password Toggle Icon</string>
+    <string name="icon_url">URL Icon</string>
+    <string name="login">Log In</string>
+    <string name="logout">Log Out</string>
+    <string name="name">Name</string>
+    <string name="note">Description</string>
+    <string name="off">Off</string>
+    <string name="on">On</string>
+    <string name="password">Password</string>
+    <string name="password_edit">Edit Password</string>
+    <string name="password_generate">Generate a Random Password</string>
+    <string name="password_name">Password Name</string>
+    <string name="password_no">No passwords are available. Please add one!</string>
+    <string name="save">Save</string>
+    <string name="search">Search</string>
+    <string name="signup">Signup User</string>
+    <string name="toggle_password_visibility">Toggle password visibility.</string>
+    <string name="url">URL</string>
+    <string name="username">Username</string>
+    <string name="view_password">View Password</string>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar"/>
+    <style name="Base.Theme.App" parent="Theme.Material3.DayNight.NoActionBar">
+        
+        
+		<item name="cardViewStyle">@style/CardViewNoBorder</item>
+		<item name="android:itemTextAppearance">@style/MyMenuItemTextAppearance</item>
+		<item name="actionOverflowMenuStyle">@style/MyOverflowMenuStyle</item>
+    </style>
+    <style name="CardViewNoBorder" parent="CardView">
+		<item name="cardCornerRadius">0dp</item>
+	</style>
+    <style name="MyMenuItemTextAppearance">
+		<item name="android:textColor">@color/grey_light</item>
+	</style>
+    <style name="MyOverflowMenuStyle">
+		<item name="android:popupBackground">@color/white</item>
+	</style>
+    <style name="Theme.App" parent="Base.Theme.App"/>
+</resources>

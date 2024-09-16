@@ -32,7 +32,11 @@ public class BiometricUtils {
                 .setNegativeButtonText("Cancel")
                 .build();
 
-        BiometricPrompt biometricPrompt = new BiometricPrompt(activity, activity.getMainExecutor(), callback);
+        BiometricPrompt biometricPrompt = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+            biometricPrompt = new BiometricPrompt(activity, activity.getMainExecutor(), callback);
+        }
+        assert biometricPrompt != null;
         biometricPrompt.authenticate(promptInfo);
     }
 }

@@ -1,6 +1,9 @@
 package com.example.app;
 
-import static com.example.app.util.ShowAlertsUtility.mostrarSweetAlert;
+import static com.example.app.util.InputValidator.getTrimmedText;
+import static com.example.app.util.InputValidator.validatePassword;
+import static com.example.app.util.InputValidator.validateUsername;
+import static com.example.app.util.ShowAlertsUtility.showAlert;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +17,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -25,44 +27,41 @@ import com.example.app.util.HashUtility;
 import com.example.app.util.InputTextWatcher;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
-
+	private static final String TAG = "MainActivity";
     private DbManager dbManager;
-    private TextInputEditText editTextEmail;
+    private TextInputEditText editTextUsername;
     private TextInputEditText editTextPassword;
-    private TextInputLayout textInputLayoutEmail;
+    private TextInputLayout textInputLayoutUsername;
     private TextInputLayout textInputLayoutPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i("TAG", "Application Started");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         initializeUI();
         setupBiometricAuthentication();
         setupLoginButton();
-        setupRegisterLink();
+        setupRegisterButton();
     }
 
     private void initializeUI() {
-        SharedPreferences sharedPreferences = getSharedPreferences("Storage", Context.MODE_PRIVATE);
         dbManager = new DbManager(getApplicationContext());
 
-        editTextEmail = findViewById(R.id.editTextUsername);
-        editTextPassword = findViewById(R.id.editTextPassword);
-        textInputLayoutEmail = findViewById(R.id.textInputLayoutEmail);
-        textInputLayoutPassword = findViewById(R.id.textInputLayoutPassword);
+        editTextUsername = findViewById(R.id.input_email);
+        editTextPassword = findViewById(R.id.input_password);
+        textInputLayoutUsername = findViewById(R.id.layout_email);
+        textInputLayoutPassword = findViewById(R.id.layout_password);
 
         // Add TextWatchers for validation feedback
-        editTextEmail.addTextChangedListener(new InputTextWatcher(textInputLayoutEmail));
+        editTextUsername.addTextChangedListener(new InputTextWatcher(textInputLayoutUsername));
         editTextPassword.addTextChangedListener(new InputTextWatcher(textInputLayoutPassword));
     }
 
     private void setupBiometricAuthentication() {
-        Button btnBiometric = findViewById(R.id.fingerprint);
+        Button btnBiometric = findViewById(R.id.btn_fingerprint);
         SharedPreferences sharedPreferences = getSharedPreferences("Storage", Context.MODE_PRIVATE);
 
         boolean isBiometricEnabled = sharedPreferences.getInt("biometric", -1) == 1;
@@ -77,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupLoginButton() {
-        Button btnLogin = findViewById(R.id.btnLogin);
+        Button btnLogin = findViewById(R.id.btn_login);
         btnLogin.setOnClickListener(v -> {
             if (isInputValid()) {
                 try {
@@ -90,33 +89,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupRegisterLink() {
-        TextView linkRegister = findViewById(R.id.linkRegister);
+        TextView linkRegister = findViewById(R.id.text_signup);
         linkRegister.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, RegisterUserActivity.class);
+            Intent intent = new Intent(MainActivity.this, RegisterUsersActivity.class);
             startActivity(intent);
+            finish();
         });
     }
-
+    
+    /**
+     * Validates user input for registering or updating a password.
+     *
+     * @return true if the inputs are valid; false otherwise.
+     */
     private boolean isInputValid() {
-        String email = Objects.requireNonNull(editTextEmail.getText()).toString().trim();
-        String password = Objects.requireNonNull(editTextPassword.getText()).toString().trim();
+    
+		if (validateUsername(editTextUsername , textInputLayoutUsername)) {
+			return false;
+        } else return !validatePassword(editTextPassword, textInputLayoutPassword);
 
-        if (TextUtils.isEmpty(email)) {
-            textInputLayoutEmail.setError("Email is required.");
-            return false;
-        } else if (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
-            textInputLayoutEmail.setError("Please enter a valid email address.");
-            return false;
-        }
-
-        if (TextUtils.isEmpty(password)) {
-            textInputLayoutPassword.setError("Password is required.");
-            return false;
-        }
-
-        return true;
     }
-
+    
     /**
      * Attempts to log in the user by validating their credentials against the database.
      *
@@ -124,18 +117,17 @@ public class MainActivity extends AppCompatActivity {
      * @throws NoSuchAlgorithmException if the specified hashing algorithm is not found.
      */
     private void performLogin() throws HashUtility.HashingException, NoSuchAlgorithmException {
-        String email = Objects.requireNonNull(editTextEmail.getText()).toString();
-        String password = Objects.requireNonNull(editTextPassword.getText()).toString();
+        String email = getTrimmedText(editTextUsername);
+        String password = getTrimmedText(editTextPassword);
 
         dbManager.open();
 
         if (dbManager.validateUser(password, email)) {
             startActivity(new Intent(MainActivity.this, ShowPasswordsActivity.class));
             dbManager.close();
+            finish();
         } else {
-            String title = "Invalid Credentials";
-            String message = "Incorrect username or password.";
-            mostrarSweetAlert(this, 3, title, message, null);
+            showAlert(this, 3, "Invalid Credentials", "Incorrect username or password", null);
             dbManager.close();
         }
     }
@@ -146,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
                 if (dbManager.userWhitBiometrics()) {
-                    Log.i("TAG", "Biometric authentication successful.");
+                    Log.i(TAG, "Biometric authentication successful.");
                     startActivity(new Intent(MainActivity.this, ShowPasswordsActivity.class));
                     Toast.makeText(MainActivity.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
                     finish();
@@ -156,13 +148,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
                 super.onAuthenticationError(errorCode, errString);
-                Log.e("TAG", "Biometric authentication error: " + errString);
+                Log.e(TAG, "Biometric authentication error: " + errString);
             }
 
             @Override
             public void onAuthenticationFailed() {
                 super.onAuthenticationFailed();
-                Log.e("TAG", "Biometric authentication failed.");
+                Log.e(TAG, "Biometric authentication failed.");
             }
         });
     }

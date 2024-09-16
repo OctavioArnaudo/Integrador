@@ -1,8 +1,16 @@
 pluginManagement {
 	repositories {
-		google()
+		google {
+			content {
+				includeGroupByRegex("com\\.android.*")
+				includeGroupByRegex("com\\.google.*")
+				includeGroupByRegex("androidx.*")
+			}
+		}
 		mavenCentral()
-		maven { url = uri("https://repo.spring.io/snapshot") }
+		maven {
+			url = uri("https://repo.spring.io/snapshot")
+		}
 		gradlePluginPortal()
 	}
 }
@@ -14,5 +22,5 @@ dependencyResolutionManagement {
 	}
 }
 
-rootProject.name = "FourTwoOne"
+rootProject.name = "App"
 include(":app")
